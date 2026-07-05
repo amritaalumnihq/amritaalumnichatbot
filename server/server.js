@@ -131,7 +131,7 @@ async function sendTemplateToPhone(phone) {
       components: [
         {
           type: 'header',
-          parameters: [{ type: 'image', image: { link: 'https://amritaalumnichatbot-production.up.railway.app/amrita_banner.png' } }]
+          parameters: [{ type: 'image', image: { link: 'https://amritaalumnichatbot-production.up.railway.app/amrita_banner.jpg' } }]
         },
         {
           type: 'body',
