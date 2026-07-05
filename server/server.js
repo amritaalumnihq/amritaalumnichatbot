@@ -139,6 +139,12 @@ async function sendTemplateToPhone(phone) {
             { type: 'text', text: name },
             { type: 'text', text: 'Jay, Sreejith' }
           ]
+        },
+        {
+          type: 'button',
+          sub_type: 'flow',
+          index: '0',
+          parameters: []
         }
       ]
     }
