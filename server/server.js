@@ -16,8 +16,9 @@ app.use((req, res, next) => {
   next();
 });
 
-const DB_PATH   = path.join(__dirname, 'alumni_db.json');
-const CONV_PATH = path.join(__dirname, 'conversations.json');
+const DATA_DIR  = process.env.DATA_DIR || __dirname;
+const DB_PATH   = path.join(DATA_DIR, 'alumni_db.json');
+const CONV_PATH = path.join(DATA_DIR, 'conversations.json');
 
 // Init empty files if they don't exist (first deploy)
 if (!fs.existsSync(DB_PATH))   fs.writeFileSync(DB_PATH,   '[]',  'utf8');
