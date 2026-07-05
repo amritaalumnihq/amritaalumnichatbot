@@ -199,6 +199,20 @@ app.post('/webhook', (req, res) => {
   }
 });
 
+// ── Privacy Policy ────────────────────────────────────────────────────────
+app.get('/privacy', (req, res) => {
+  res.send(`<!DOCTYPE html><html><head><title>Privacy Policy - Amrita Alumni</title>
+  <style>body{font-family:sans-serif;max-width:700px;margin:60px auto;padding:0 20px;color:#333;line-height:1.7}</style></head>
+  <body><h1>Privacy Policy</h1><p><strong>Amrita Alumni Association</strong></p>
+  <p>This WhatsApp-based alumni directory service collects alumni professional information (name, employer, designation, location, email, LinkedIn) solely for the purpose of maintaining the official Amrita University Alumni Directory.</p>
+  <h2>Data Use</h2><ul>
+  <li>Data is used exclusively for the alumni directory managed by Amrita Alumni Association.</li>
+  <li>Data is not sold or shared with third parties.</li>
+  <li>Alumni may request deletion of their data at any time.</li></ul>
+  <h2>Contact</h2><p>For data requests contact: alumni@amrita.edu</p>
+  <p style="color:#999;font-size:13px">Last updated: July 2026</p></body></html>`);
+});
+
 // ── Dashboard API ──────────────────────────────────────────────────────────
 app.get('/', (req, res) => res.json({ status: 'ok', service: 'Amrita Alumni Flow Server' }));
 
