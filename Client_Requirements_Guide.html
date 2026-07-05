@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup Requirements — Amrita Alumni WhatsApp System</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Print styles */
+@media print {
+    body { background: white; }
+    .no-print { display: none; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; }
+    .section { break-inside: avoid; }
+}
+
+.page {
+    max-width: 820px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* ── HEADER ── */
+.doc-header {
+    background: linear-gradient(135deg, #3d0a5c 0%, #6b1a9a 100%);
+    padding: 36px 48px;
+    color: white;
+}
+.doc-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+.logo-area { display: flex; align-items: center; gap: 14px; }
+.logo-box {
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+}
+.logo-text { }
+.logo-name { font-size: 16px; font-weight: 700; }
+.logo-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.doc-meta {
+    text-align: right;
+    font-size: 12px;
+    opacity: 0.75;
+    line-height: 1.8;
+}
+.doc-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+.doc-subtitle { font-size: 14px; opacity: 0.8; }
+
+/* Requirement count chips */
+.req-chips {
+    display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;
+}
+.chip {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white; padding: 5px 14px;
+    border-radius: 20px; font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+}
+.chip-dot { width: 8px; height: 8px; border-radius: 50%; }
+.chip-dot.green  { background: #4eff91; }
+.chip-dot.yellow { background: #ffd93d; }
+.chip-dot.blue   { background: #6eb5ff; }
+
+/* ── BODY ── */
+.doc-body { padding: 40px 48px; }
+
+/* Intro notice */
+.intro-box {
+    background: #f0e6ff;
+    border-left: 4px solid #6b1a9a;
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 36px;
+}
+.intro-box p { font-size: 13.5px; color: #3d0a5c; line-height: 1.7; }
+.intro-box strong { color: #3d0a5c; }
+
+/* ── SECTION ── */
+.section { margin-bottom: 40px; }
+.section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+.section-num {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #3d0a5c, #6b1a9a);
+    color: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800; flex-shrink: 0;
+}
+.section-title { font-size: 18px; font-weight: 800; color: #222; }
+.section-tag {
+    margin-left: auto;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+}
+.tag-required { background: #ffe0e0; color: #c0392b; }
+.tag-important { background: #fff3cd; color: #856404; }
+.tag-easy { background: #e0f7e9; color: #1a6b3a; }
+
+/* Steps */
+.steps { display: flex; flex-direction: column; gap: 14px; }
+.step {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: #fafafa; border: 1px solid #eee;
+    border-radius: 10px; padding: 14px 16px;
+}
+.step-num {
+    width: 26px; height: 26px; flex-shrink: 0;
+    background: #6b1a9a; color: white;
+    border-radius: 50%; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+}
+.step-content { flex: 1; }
+.step-title { font-size: 13.5px; font-weight: 700; color: #222; margin-bottom: 3px; }
+.step-desc { font-size: 12.5px; color: #555; line-height: 1.6; }
+.step-desc a { color: #6b1a9a; font-weight: 600; }
+.step-desc code {
+    background: #f0e6ff; color: #3d0a5c;
+    padding: 1px 6px; border-radius: 4px;
+    font-family: monospace; font-size: 12px;
+}
+
+/* Screenshot placeholder */
+.screenshot-box {
+    background: #f8f4ff;
+    border: 2px dashed #c9a8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12px; color: #888;
+}
+.screenshot-box .icon { font-size: 28px; margin-bottom: 6px; }
+.screenshot-box p { font-size: 12px; color: #888; }
+
+/* Info box */
+.info-box {
+    background: #e8f4fd;
+    border-left: 4px solid #2196f3;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 12.5px; color: #1565c0;
+    line-height: 1.6;
+}
+.warn-box {
+    background: #fff8e1;
+    border-left: 4px solid #ffc107;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 12.5px; color: #7a5c00;
+    line-height: 1.6;
+}
+
+/* Table */
+.data-table {
+    width: 100%; border-collapse: collapse;
+    margin-top: 14px; font-size: 12.5px;
+}
+.data-table th {
+    background: #f0e6ff; color: #3d0a5c;
+    padding: 9px 14px; text-align: left;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 2px solid #d9bff5;
+}
+.data-table td {
+    padding: 9px 14px; border-bottom: 1px solid #f0f0f0;
+    vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #fdf8ff; }
+.req-badge {
+    display: inline-block; padding: 2px 8px;
+    border-radius: 20px; font-size: 10px; font-weight: 700;
+}
+.req-must { background: #ffe0e0; color: #c0392b; }
+.req-opt  { background: #e0f0ff; color: #1565c0; }
+
+/* Email column badge */
+.col-name { font-weight: 700; color: #3d0a5c; }
+.col-example { font-size: 11px; color: #888; margin-top: 2px; }
+
+/* Checklist */
+.checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.checklist li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 13px; color: #444;
+}
+.check-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* Contact box */
+.contact-box {
+    background: linear-gradient(135deg, #f0e6ff, #e8d5f5);
+    border-radius: 10px; padding: 20px 24px;
+    display: flex; gap: 20px; align-items: center;
+    margin-top: 14px;
+}
+.contact-avatar {
+    width: 52px; height: 52px;
+    background: #6b1a9a; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 22px; flex-shrink: 0;
+}
+.contact-info { flex: 1; }
+.contact-name { font-size: 15px; font-weight: 700; color: #3d0a5c; }
+.contact-role { font-size: 12px; color: #888; margin-top: 1px; }
+.contact-links { margin-top: 8px; display: flex; flex-direction: column; gap: 3px; }
+.contact-link { font-size: 12.5px; color: #6b1a9a; display: flex; align-items: center; gap: 6px; }
+
+/* ── FOOTER ── */
+.doc-footer {
+    background: #fafafa;
+    border-top: 1px solid #eee;
+    padding: 20px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.footer-left { font-size: 11px; color: #aaa; }
+.footer-right { font-size: 11px; color: #aaa; text-align: right; }
+
+/* Summary card at top */
+.summary-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 36px;
+}
+.summary-card {
+    border: 1.5px solid #e8d5f5;
+    border-radius: 10px; padding: 16px;
+    background: #fdf8ff;
+}
+.summary-card-num {
+    font-size: 28px; font-weight: 900; color: #6b1a9a; line-height: 1;
+}
+.summary-card-label { font-size: 12px; font-weight: 700; color: #555; margin-top: 4px; }
+.summary-card-desc { font-size: 11px; color: #999; margin-top: 3px; }
+
+/* Print button */
+.print-btn {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #6b1a9a; color: white;
+    border: none; border-radius: 50px;
+    padding: 12px 24px; font-size: 13px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(107,26,154,0.4);
+    display: flex; align-items: center; gap: 8px;
+    font-family: inherit; transition: background 0.15s;
+    z-index: 100;
+}
+.print-btn:hover { background: #3d0a5c; }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+    <!-- HEADER -->
+    <div class="doc-header">
+        <div class="doc-header-top">
+            <div class="logo-area">
+                <div class="logo-box">🎓</div>
+                <div class="logo-text">
+                    <div class="logo-name">Amrita Vishwa Vidyapeetham</div>
+                    <div class="logo-sub">Office of Alumni Relations</div>
+                </div>
+            </div>
+            <div class="doc-meta">
+                <div>Date: June 27, 2026</div>
+                <div>Document: Setup Requirements</div>
+                <div>Reference: Alumni WhatsApp System</div>
+            </div>
+        </div>
+
+        <div class="doc-title">Setup Requirements Guide</div>
+        <div class="doc-subtitle">What we need from your team to launch the Alumni Verification System on WhatsApp</div>
+
+        <div class="req-chips">
+            <div class="chip"><div class="chip-dot green"></div>3 Things Required</div>
+            <div class="chip"><div class="chip-dot yellow"></div>Estimated Time: 15–20 Minutes</div>
+            <div class="chip"><div class="chip-dot blue"></div>No Technical Knowledge Needed</div>
+        </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="doc-body">
+
+        <!-- Intro -->
+        <div class="intro-box">
+            <p>
+                This document outlines the <strong>three things we need from your side</strong> to set up and launch the Alumni Directory Verification System on WhatsApp. Each step is straightforward and requires no technical knowledge — we have kept the instructions as simple as possible. Once we receive these, we will handle all the technical setup and deliver a fully working system.
+            </p>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-card-num">01</div>
+                <div class="summary-card-label">Meta Business Manager Access</div>
+                <div class="summary-card-desc">Add our team to your existing WhatsApp business account</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-num">02</div>
+                <div class="summary-card-label">Alumni Database File</div>
+                <div class="summary-card-desc">Your existing alumni records in Excel or CSV format</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-card-num">03</div>
+                <div class="summary-card-label">Google Sheet Access</div>
+                <div class="summary-card-desc">A shared sheet where all form submissions will be logged</div>
+            </div>
+        </div>
+
+        <!-- ═══ SECTION 1 ═══ -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-num">1</div>
+                <div class="section-title">Add Our Developer to Meta Business Manager</div>
+                <div class="section-tag tag-required">Required</div>
+            </div>
+
+            <p style="font-size:13px; color:#555; margin-bottom:16px;">
+                Your WhatsApp number is registered on Meta's official platform. To build the interactive form (WhatsApp Flow) and connect it to your alumni database, we need to be added to your Meta Business Manager account as a developer. This is a one-time step — you simply send us an invitation.
+            </p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Open Meta Business Manager</div>
+                        <div class="step-desc">
+                            Go to <a href="https://business.facebook.com" target="_blank">business.facebook.com</a> and log in with the Facebook account that owns your WhatsApp Business number.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Go to Business Settings</div>
+                        <div class="step-desc">
+                            Click the <strong>Settings (⚙)</strong> icon in the left sidebar, then select <strong>"Business Settings"</strong> from the menu.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Open the People Section</div>
+                        <div class="step-desc">
+                            In Business Settings, find the left menu and click on <strong>"People"</strong> under the <em>Users</em> section.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Click "Add People" or "Invite"</div>
+                        <div class="step-desc">
+                            Click the blue <strong>"Add People"</strong> button at the top right of the page.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">5</div>
+                    <div class="step-content">
+                        <div class="step-title">Enter Our Email Address</div>
+                        <div class="step-desc">
+                            Type in the email address: <code>murtaza.special623@gmail.com</code><br>
+                            Set the role to <strong>"Employee Access"</strong> — this is sufficient for our work.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">6</div>
+                    <div class="step-content">
+                        <div class="step-title">Assign WhatsApp Account Access</div>
+                        <div class="step-desc">
+                            On the next screen, you will be asked which assets to assign. Please select your <strong>WhatsApp Business Account</strong> and assign <strong>"Full Control"</strong> or <strong>"Manage"</strong> permission. Then click <strong>Invite</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">7</div>
+                    <div class="step-content">
+                        <div class="step-title">Send Confirmation</div>
+                        <div class="step-desc">
+                            Once done, please send us a quick message or email confirming the invite has been sent. We will accept it and begin the technical setup immediately.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                ℹ️ <strong>Why do we need this?</strong> We need access to build the WhatsApp Form (called a "Flow") inside your account, connect it to your alumni database, and generate the API key that makes everything work automatically. We do not have access to change any of your other Facebook or Instagram pages.
+            </div>
+
+            <div class="warn-box">
+                ⚠️ <strong>Important:</strong> Please make sure you are logged in to the Facebook account that is the <em>admin</em> of your WhatsApp Business number. If you are unsure which account this is, please check with whoever originally set up the WhatsApp Business API for your institution.
+            </div>
+
+            <!-- ALTERNATIVE OPTION -->
+            <div style="margin-top:24px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                    <div style="flex:1;height:1px;background:#eee;"></div>
+                    <div style="font-size:12px;font-weight:700;color:#999;white-space:nowrap;padding:0 12px;background:white;">OR — IF YOU PREFER NOT TO ADD US AS A USER</div>
+                    <div style="flex:1;height:1px;background:#eee;"></div>
+                </div>
+
+                <div style="background:#f8f4ff;border:1.5px solid #d9bff5;border-radius:10px;padding:18px 20px;margin-bottom:14px;">
+                    <div style="font-size:13.5px;font-weight:700;color:#3d0a5c;margin-bottom:6px;">Alternative: Share API Credentials Directly</div>
+                    <div style="font-size:13px;color:#555;line-height:1.7;">
+                        If your team is not comfortable adding an external person to your Meta Business Manager account, you can instead share three specific credential values with us. We will use these to build and connect the system without requiring any access to your account.
+                    </div>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Get Your Phone Number ID</div>
+                            <div class="step-desc">
+                                Log in to <a href="https://business.facebook.com" target="_blank">business.facebook.com</a> → Click <strong>WhatsApp</strong> in the left menu → Select <strong>API Setup</strong>.<br><br>
+                                You will see a field labelled <strong>"Phone Number ID"</strong> — it is a long number (e.g. <code>1234567890123456</code>). Copy it and send it to us.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Get Your WhatsApp Business Account ID</div>
+                            <div class="step-desc">
+                                On the same <strong>API Setup</strong> page, you will also see a field labelled <strong>"WhatsApp Business Account ID"</strong> (also called WABA ID) — another long number. Copy and send that to us as well.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Generate a Permanent System User Token</div>
+                            <div class="step-desc">
+                                This is the API key that allows the system to send messages and receive responses. Follow these steps:<br><br>
+                                a) Go to <strong>Business Settings</strong> → <strong>Users</strong> → <strong>System Users</strong><br>
+                                b) Click <strong>"Add"</strong> and create a new system user — name it <em>"Alumni System"</em>, role: <strong>Employee</strong><br>
+                                c) Click <strong>"Generate New Token"</strong> on that system user<br>
+                                d) Select your <strong>WhatsApp Business Account</strong> as the app, set expiry to <strong>Never</strong>, and tick these permissions: <code>whatsapp_business_messaging</code> and <code>whatsapp_business_management</code><br>
+                                e) Click <strong>Generate Token</strong> — copy the token that appears (it is only shown once) and send it to us securely.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top:14px;">
+                    ℹ️ <strong>This token does not give us access to your Facebook page, Instagram, or any other platform.</strong> It only allows our system to send and receive WhatsApp messages through your registered business number. You can revoke it at any time from Business Settings → System Users.
+                </div>
+
+                <div class="warn-box" style="margin-top:10px;">
+                    ⚠️ <strong>Security reminder:</strong> Please share the token over a secure channel — WhatsApp direct message or encrypted email. Do not paste it in a regular email or public document.
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SECTION 2 ═══ -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-num">2</div>
+                <div class="section-title">Share the Alumni Database File</div>
+                <div class="section-tag tag-required">Required</div>
+            </div>
+
+            <p style="font-size:13px; color:#555; margin-bottom:16px;">
+                We need your existing alumni records so the system can automatically look up each alumnus when they open the WhatsApp form and pre-fill their details. Please share the file in <strong>Excel (.xlsx)</strong> or <strong>CSV (.csv)</strong> format.
+            </p>
+
+            <p style="font-size:13px; color:#555; margin-bottom:14px; font-weight:600;">
+                The file must contain the following columns:
+            </p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Column Name</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                        <th>Required?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="col-name">Phone Number</div>
+                        </td>
+                        <td>The WhatsApp-registered mobile number of the alumnus</td>
+                        <td><span style="font-family:monospace;font-size:12px;">919876543210</span><br><div class="col-example">Include country code, no spaces or dashes</div></td>
+                        <td><span class="req-badge req-must">MUST HAVE</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Full Name</div></td>
+                        <td>Alumnus full name as it appears in university records</td>
+                        <td>Rahul Sharma</td>
+                        <td><span class="req-badge req-must">MUST HAVE</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Graduation Year</div></td>
+                        <td>Year the alumnus graduated</td>
+                        <td>2022</td>
+                        <td><span class="req-badge req-must">MUST HAVE</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Campus</div></td>
+                        <td>Campus where the alumnus studied</td>
+                        <td>Amrita Vishwa Vidyapeetham, Coimbatore</td>
+                        <td><span class="req-badge req-must">MUST HAVE</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Department</div></td>
+                        <td>Degree and department</td>
+                        <td>B.Tech — Computer Science</td>
+                        <td><span class="req-badge req-must">MUST HAVE</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Current Designation</div></td>
+                        <td>Last known job title (can be blank if unknown)</td>
+                        <td>Data Analyst</td>
+                        <td><span class="req-badge req-opt">OPTIONAL</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Current Employer</div></td>
+                        <td>Last known company name (can be blank if unknown)</td>
+                        <td>Tata Consultancy Services</td>
+                        <td><span class="req-badge req-opt">OPTIONAL</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Current Location</div></td>
+                        <td>Last known city/state (can be blank if unknown)</td>
+                        <td>Bangalore, Karnataka</td>
+                        <td><span class="req-badge req-opt">OPTIONAL</span></td>
+                    </tr>
+                    <tr>
+                        <td><div class="col-name">Email Address</div></td>
+                        <td>Institutional or personal email (can be blank)</td>
+                        <td>rahul@amrita.edu</td>
+                        <td><span class="req-badge req-opt">OPTIONAL</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box" style="margin-top:16px;">
+                ℹ️ <strong>Phone number is the key field.</strong> The system uses the phone number to find each alumnus record when they open the WhatsApp form. Please ensure phone numbers include the country code (91 for India) with no spaces, dashes, or plus signs — e.g., <code style="background:#dbeafe;color:#1e40af;padding:1px 5px;border-radius:3px;font-family:monospace;">919876543210</code>
+            </div>
+
+            <div class="warn-box">
+                ⚠️ <strong>Data Privacy:</strong> Please share the file over a secure channel (encrypted email, Google Drive with restricted access, or WhatsApp). Do not share via public links. We will handle all alumni data with strict confidentiality.
+            </div>
+        </div>
+
+        <!-- ═══ SECTION 3 ═══ -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-num">3</div>
+                <div class="section-title">Share a Google Sheet for Submissions</div>
+                <div class="section-tag tag-easy">Easiest Step</div>
+            </div>
+
+            <p style="font-size:13px; color:#555; margin-bottom:16px;">
+                Every time an alumnus submits or updates their profile through WhatsApp, the data is instantly written to a Google Sheet. This gives your team a live, always up-to-date record of all submissions that can be downloaded as Excel at any time.
+            </p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Create a New Google Sheet</div>
+                        <div class="step-desc">
+                            Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> and create a new blank spreadsheet. Name it something like <strong>"Amrita Alumni Verification — Submissions"</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Click "Share" (Top Right)</div>
+                        <div class="step-desc">
+                            Click the green <strong>"Share"</strong> button in the top right corner of the Google Sheet.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                        <div class="step-title">Add Our Email with Editor Access</div>
+                        <div class="step-desc">
+                            In the "Add people and groups" field, type: <code>murtaza.special623@gmail.com</code><br>
+                            Set the permission to <strong>"Editor"</strong>, then click <strong>Send</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-num">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Copy the Sheet Link and Send It to Us</div>
+                        <div class="step-desc">
+                            Copy the URL from your browser's address bar and send it to us. That's all — we will set up automatic data entry from WhatsApp into this sheet.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                ℹ️ <strong>What will be in the sheet?</strong> Every submission will automatically appear as a new row containing: Name, Phone, Graduation Year, Campus, Department, Designation, Employer, Location, Email, LinkedIn, and the Date &amp; Time of submission. Your team can filter, search, and download this data as Excel at any time.
+            </div>
+        </div>
+
+        <!-- ═══ SUMMARY CHECKLIST ═══ -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-num" style="background: #1a6b3a;">✓</div>
+                <div class="section-title">Quick Summary Checklist</div>
+            </div>
+
+            <ul class="checklist">
+                <li>
+                    <span class="check-icon">☐</span>
+                    <span>
+                        <strong>Meta Business Manager — choose one option:</strong><br>
+                        <span style="display:inline-block;margin-top:4px;">
+                            <strong>Option A:</strong> Add <code style="background:#f0e6ff;color:#3d0a5c;padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px;">murtaza.special623@gmail.com</code> as Employee with WhatsApp Account access.<br>
+                            <strong>Option B:</strong> Share Phone Number ID + WhatsApp Business Account ID + a permanent System User Token.
+                        </span>
+                    </span>
+                </li>
+                <li>
+                    <span class="check-icon">☐</span>
+                    <span><strong>Alumni Database:</strong> Share Excel/CSV file with at minimum — Phone Number (with country code), Full Name, Graduation Year, Campus, Department.</span>
+                </li>
+                <li>
+                    <span class="check-icon">☐</span>
+                    <span><strong>Google Sheet:</strong> Create a blank Google Sheet, share it with <code style="background:#f0e6ff;color:#3d0a5c;padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px;">murtaza.special623@gmail.com</code> as Editor, and send us the link.</span>
+                </li>
+            </ul>
+
+            <div class="warn-box" style="margin-top:20px; background:#f0fdf4; border-color:#22c55e; color:#14532d;">
+                ✅ <strong>Once we receive all three items, the full system will be ready within 3–5 working days.</strong> We will share a live demo link with your team before final deployment.
+            </div>
+        </div>
+
+        <!-- ═══ CONTACT ═══ -->
+        <div class="section" style="margin-bottom: 0;">
+            <div class="section-header">
+                <div class="section-num" style="background:#128C7E;">?</div>
+                <div class="section-title">Questions or Help?</div>
+            </div>
+            <p style="font-size:13px; color:#555; margin-bottom:14px;">
+                If you face any difficulty with any of the steps above, please reach out directly. We are happy to schedule a short screen-sharing call to walk your team through the process.
+            </p>
+            <div class="contact-box">
+                <div class="contact-avatar">👨‍💻</div>
+                <div class="contact-info">
+                    <div class="contact-name">Technical Lead — Alumni System</div>
+                    <div class="contact-role">WhatsApp Flow Developer</div>
+                    <div class="contact-links">
+                        <div class="contact-link">📧 murtaza.special623@gmail.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /doc-body -->
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+        <div class="footer-left">
+            Amrita Vishwa Vidyapeetham — Alumni Verification System<br>
+            This document is confidential and intended for internal use only.
+        </div>
+        <div class="footer-right">
+            Prepared: June 27, 2026<br>
+            Version 1.0
+        </div>
+    </div>
+
+</div><!-- /page -->
+
+<!-- Print Button -->
+<button class="print-btn no-print" onclick="window.print()">
+    🖨️ Save as PDF / Print
+</button>
+
+</body>
+</html>

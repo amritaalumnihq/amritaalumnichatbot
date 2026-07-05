@@ -1,0 +1,21 @@
+# Secrets - NEVER commit these
+server/private.pem
+server/.env
+.env
+
+# Database files with real alumni data
+server/alumni_db.json
+server/conversations.json
+
+# Node modules
+server/node_modules/
+node_modules/
+
+# Temp/utility scripts
+server/upload_flow.js
+server/flow_base.json
+server/debug.log
+debug.log
+
+# Logs
+*.log

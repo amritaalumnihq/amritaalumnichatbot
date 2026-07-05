@@ -1,0 +1,57 @@
+{
+  "info": {
+    "name": "Amrita Alumni - WhatsApp API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Send Message (Permission Error - AiSensy Block)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer EAAVZB1He4USkBR2SQL84bf3ao4H908zCzC5b5NBmOe30zUsZBfc94GyTZBRP04lUdFzB51JQeqVMoION4Hjw9P85e1yj8o8hUCDi5KKIeWm7PX9Youk3lwSxfRrdIsts9hgl59q8dJRH6cioyOSm2njQbwIZBBZCQjiisAfZCSmg1lO2tXkuvEHB4rxoquCdD6wwZDZD"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"923317430602\",\n  \"type\": \"text\",\n  \"text\": { \"body\": \"test\" }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://graph.facebook.com/v20.0/1181292345065359/messages",
+          "protocol": "https",
+          "host": ["graph", "facebook", "com"],
+          "path": ["v20.0", "1181292345065359", "messages"]
+        }
+      }
+    },
+    {
+      "name": "Check Subscribed Apps (Shows AiSensy Block)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer EAAVZB1He4USkBR2SQL84bf3ao4H908zCzC5b5NBmOe30zUsZBfc94GyTZBRP04lUdFzB51JQeqVMoION4Hjw9P85e1yj8o8hUCDi5KKIeWm7PX9Youk3lwSxfRrdIsts9hgl59q8dJRH6cioyOSm2njQbwIZBBZCQjiisAfZCSmg1lO2tXkuvEHB4rxoquCdD6wwZDZD"
+          }
+        ],
+        "url": {
+          "raw": "https://graph.facebook.com/v20.0/1038369242188926/subscribed_apps",
+          "protocol": "https",
+          "host": ["graph", "facebook", "com"],
+          "path": ["v20.0", "1038369242188926", "subscribed_apps"]
+        }
+      }
+    }
+  ]
+}

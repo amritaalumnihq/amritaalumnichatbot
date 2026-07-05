@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amrita Alumni Verification System — Client Demo</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #16213e;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+    background: linear-gradient(135deg, #3d0a5c 0%, #6b1a9a 100%);
+    color: white;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+}
+.header-logo {
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+}
+.header-text h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+.header-text p  { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.demo-badge {
+    margin-left: auto;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white; padding: 5px 14px;
+    border-radius: 20px; font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; display: flex; align-items: center; gap: 6px;
+}
+.demo-dot {
+    width: 7px; height: 7px; background: #4eff91;
+    border-radius: 50%; animation: blink 1.8s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── LAYOUT ── */
+.main-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 28px;
+    padding: 28px 32px;
+    max-width: 1440px;
+    margin: 0 auto;
+    align-items: start;
+}
+.col-label {
+    color: rgba(255,255,255,0.45);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+/* ═══════════════════════
+   PHONE / WHATSAPP
+═══════════════════════ */
+.wa-col { display: flex; flex-direction: column; }
+
+.phone-frame {
+    width: 360px; background: #1c1c1e;
+    border-radius: 44px; padding: 10px;
+    box-shadow:
+        0 0 0 1px #2a2a2e,
+        0 0 0 3px #111,
+        0 40px 80px rgba(0,0,0,0.6);
+    align-self: center; position: relative;
+}
+.phone-notch {
+    position: absolute; top: 10px; left: 50%;
+    transform: translateX(-50%);
+    width: 90px; height: 24px;
+    background: #1c1c1e; border-radius: 0 0 14px 14px; z-index: 10;
+}
+.phone-screen {
+    width: 100%; height: 720px;
+    background: #ECE5DD;
+    border-radius: 36px; overflow: hidden;
+    display: flex; flex-direction: column;
+    position: relative;
+}
+
+/* WA Status */
+.wa-status {
+    background: #128C7E; padding: 6px 20px 4px;
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: white; font-weight: 600; flex-shrink: 0;
+}
+/* WA Header */
+.wa-header {
+    background: #075E54; padding: 10px 16px 12px;
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+}
+.wa-back { color: white; font-size: 20px; line-height: 1; }
+.wa-avatar {
+    width: 38px; height: 38px; background: #25D366;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+}
+.wa-info { flex: 1; }
+.wa-name { color: white; font-size: 15px; font-weight: 600; }
+.wa-online { color: rgba(255,255,255,0.75); font-size: 11px; margin-top: 1px; }
+.wa-icons { color: rgba(255,255,255,0.85); display: flex; gap: 18px; font-size: 17px; }
+
+/* Chat */
+.wa-chat {
+    flex: 1; overflow-y: auto;
+    padding: 10px 10px 6px;
+    display: flex; flex-direction: column; gap: 6px;
+    background: #ECE5DD url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='%23c4b099' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+}
+.date-chip { text-align: center; margin: 4px 0; }
+.date-chip span {
+    background: rgba(255,255,255,0.88); color: #666; font-size: 10px;
+    padding: 3px 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+.msg { display: flex; flex-direction: column; max-width: 82%; }
+.msg.recv { align-self: flex-start; }
+.msg.sent { align-self: flex-end; }
+.bubble {
+    padding: 7px 10px 5px; border-radius: 7px;
+    font-size: 12.5px; line-height: 1.45;
+}
+.msg.recv .bubble { background: white; border-top-left-radius: 2px; box-shadow: 0 1px 1px rgba(0,0,0,0.08); }
+.msg.sent .bubble { background: #DCF8C6; border-top-right-radius: 2px; box-shadow: 0 1px 1px rgba(0,0,0,0.08); }
+.msg-time { font-size: 10px; color: #999; padding: 1px 4px 0; align-self: flex-end; }
+.msg.recv .msg-time { align-self: flex-start; padding-left: 4px; }
+
+/* CTA Card */
+.wa-cta-card {
+    background: white; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;
+    transition: transform 0.15s;
+}
+.wa-cta-card:hover { transform: scale(1.01); }
+.wa-cta-top { background: #f0f0f0; padding: 7px 10px; font-size: 11px; color: #666; border-bottom: 1px solid #e8e8e8; }
+.wa-cta-body { padding: 7px 10px; font-size: 12px; color: #333; }
+.wa-cta-action {
+    border-top: 1px solid #eee; padding: 8px 10px;
+    text-align: center; color: #128C7E; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+
+/* ═══════════════════════════════════
+   WHATSAPP FLOW OVERLAY (full-screen inside phone)
+═══════════════════════════════════ */
+.wa-flow-overlay {
+    display: none;
+    position: absolute;
+    /* sits below status bar (~24px) + WA header (~62px) */
+    top: 86px;
+    left: 0; right: 0; bottom: 0;
+    background: white;
+    z-index: 20;
+    flex-direction: column;
+    border-radius: 0 0 36px 36px;
+    overflow: hidden;
+}
+.wa-flow-overlay.open { display: flex; }
+
+/* Flow header — dark teal with X */
+.flow-hd {
+    background: #1a7a6e;
+    padding: 11px 14px;
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+}
+.flow-hd-x {
+    color: white; font-size: 16px; cursor: pointer;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; transition: background 0.15s; flex-shrink: 0;
+}
+.flow-hd-x:hover { background: rgba(255,255,255,0.15); }
+.flow-hd-title { color: white; font-size: 14px; font-weight: 700; flex: 1; }
+
+/* Flow body — takes remaining height, scrolls */
+.flow-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 14px 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Subtitle block */
+.flow-subtitle { margin-bottom: 14px; }
+.flow-subtitle-main { font-size: 13px; font-weight: 700; color: #222; margin-bottom: 2px; }
+.flow-subtitle-sub { font-size: 11px; color: #777; }
+
+/* Section headings */
+.flow-section-hd {
+    font-size: 10.5px; font-weight: 800;
+    color: #333; text-transform: uppercase;
+    letter-spacing: 0.6px; margin: 10px 0 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+.flow-section-hd:first-of-type { border-top: none; padding-top: 0; }
+
+/* Field label */
+.fl { font-size: 12px; font-weight: 600; color: #222; margin-bottom: 4px; }
+
+/* Read-only field */
+.f-ro {
+    background: #f0f0f0; border: 1px solid #ddd;
+    border-radius: 6px; padding: 8px 10px;
+    font-size: 13px; color: #555;
+    margin-bottom: 12px; font-weight: 500;
+}
+
+/* Editable field wrapper */
+.f-wrap { position: relative; margin-bottom: 10px; }
+
+/* Active editable (teal border like screenshot) */
+.f-edit {
+    border: 1.5px solid #128C7E; border-radius: 6px;
+    padding: 8px 32px 8px 10px;
+    font-size: 13px; color: #222; width: 100%;
+    background: white; outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.f-edit:focus { border-color: #075E54; box-shadow: 0 0 0 3px rgba(7,94,84,0.1); }
+.f-edit::placeholder { color: #aaa; }
+
+/* Pencil icon inside field */
+.f-pencil {
+    position: absolute; right: 8px; top: 50%;
+    transform: translateY(-50%);
+    color: #999; font-size: 13px; pointer-events: none;
+}
+/* Clear X inside field */
+.f-clearx {
+    position: absolute; right: 8px; top: 50%;
+    transform: translateY(-50%);
+    color: #999; font-size: 14px; cursor: pointer;
+    line-height: 1;
+}
+.f-clearx:hover { color: #555; }
+
+/* Validation hint */
+.f-hint { font-size: 10.5px; color: #999; margin-top: -6px; margin-bottom: 8px; }
+
+/* Phone lookup step */
+.demo-select {
+    border: 1.5px solid #128C7E; border-radius: 6px;
+    padding: 8px 10px; font-size: 12.5px; width: 100%;
+    margin-bottom: 8px; background: white; outline: none;
+    font-family: inherit; cursor: pointer; color: #222;
+}
+.ls {
+    font-size: 11px; text-align: center;
+    padding: 5px 8px; border-radius: 5px; margin-bottom: 8px; display: none;
+}
+.ls-loading { background: #fff8e1; color: #7a5c00; display: block; }
+.ls-found   { background: #e8f5e9; color: #1b5e20; display: block; }
+
+.btn-lookup {
+    background: #128C7E; color: white; border: none;
+    border-radius: 6px; padding: 9px; width: 100%;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: background 0.15s;
+}
+.btn-lookup:hover { background: #075E54; }
+
+/* Bottom buttons */
+.flow-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; margin-top: 4px;
+    border-top: 1px solid #f0f0f0;
+}
+.btn-clear {
+    background: none; border: none; cursor: pointer;
+    color: #128C7E; font-size: 13px; font-weight: 600;
+    font-family: inherit; padding: 4px 0;
+    text-decoration: underline; text-underline-offset: 2px;
+}
+.btn-clear:hover { color: #075E54; }
+.btn-update {
+    background: #128C7E; color: white; border: none;
+    border-radius: 8px; padding: 10px 22px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    font-family: inherit; transition: background 0.15s;
+}
+.btn-update:hover { background: #075E54; }
+
+/* WA input bar */
+.wa-bar {
+    background: #f0f0f0; padding: 7px 10px;
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.wa-typebox { flex: 1; background: white; border-radius: 20px; padding: 7px 14px; font-size: 12px; color: #bbb; }
+.wa-mic { width: 34px; height: 34px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; flex-shrink: 0; }
+
+/* ═══════════════════════
+   ADMIN DASHBOARD
+═══════════════════════ */
+.admin-col { display: flex; flex-direction: column; gap: 20px; }
+.card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.18); }
+
+.card-hd {
+    background: linear-gradient(135deg, #3d0a5c 0%, #6b1a9a 100%);
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { color: white; font-size: 14px; font-weight: 700; }
+.card-sub   { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 2px; }
+.btn-export {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35);
+    color: white; padding: 6px 14px; border-radius: 8px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; font-family: inherit;
+    transition: background 0.15s;
+}
+.btn-export:hover { background: rgba(255,255,255,0.25); }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(4,1fr); border-bottom: 1px solid #eee; }
+.stat { padding: 14px 16px; text-align: center; border-right: 1px solid #f0f0f0; }
+.stat:last-child { border-right: none; }
+.stat-val { font-size: 26px; font-weight: 800; color: #5a0e8e; line-height: 1; }
+.stat-lbl { font-size: 10px; color: #999; margin-top: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Table */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+    background: #f9f5ff; color: #5a0e8e; font-weight: 700;
+    padding: 9px 12px; text-align: left; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 2px solid #e8d5f5; white-space: nowrap;
+}
+td { padding: 8px 12px; border-bottom: 1px solid #f5f5f5; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fdf8ff; }
+.nm { font-weight: 700; color: #222; }
+.ph { font-family: monospace; color: #888; font-size: 11px; }
+.sc { font-size: 11px; color: #666; }
+.new-row td { background: #f0fff4 !important; animation: rowfade 3s ease forwards; }
+@keyframes rowfade { 0%{background:#c8f7dc} 100%{background:#f0fff4} }
+
+.badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 10.5px; font-weight: 700; white-space: nowrap;
+}
+.b-verified { background: #e6f9ee; color: #1a6b3a; }
+.b-pending  { background: #fff8e1; color: #7a5c00; }
+.b-updated  { background: #f0e6ff; color: #5a0e8e; }
+.b-new      { background: #d1f0f7; color: #0c5460; }
+.changed    { color: #5a0e8e; font-weight: 700; }
+
+/* Pipeline */
+.pipeline {
+    display: flex; align-items: center; padding: 14px 20px;
+    background: #fafafa; border-top: 1px solid #f0f0f0; gap: 2px; overflow-x: auto;
+}
+.pipe-node { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 72px; }
+.pipe-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.p-wa     { background: #e1f5e8; }
+.p-hook   { background: #e8f0fe; }
+.p-db     { background: #fce8e6; }
+.p-sheets { background: #e6f4ea; }
+.p-dl     { background: #fff3e0; }
+.pipe-lbl { font-size: 9.5px; color: #888; text-align: center; font-weight: 600; line-height: 1.3; }
+.pipe-arr { color: #ccc; font-size: 20px; margin: 0 2px; padding-bottom: 20px; flex-shrink: 0; }
+
+/* Ledger */
+.ledger-hd {
+    padding: 12px 18px; border-bottom: 1px solid #f0f0f0;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.ledger-title { font-size: 13px; font-weight: 700; color: #222; }
+.live-badge { display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: #1da851; font-weight: 700; }
+.live-dot { width: 7px; height: 7px; background: #25D366; border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+.ledger-body { padding: 12px 16px; min-height: 80px; max-height: 200px; overflow-y: auto; }
+.ledger-empty { text-align: center; color: #ccc; padding: 22px; font-size: 12px; }
+.ledger-entry {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px; margin-bottom: 6px;
+    background: #f9f9f9; font-size: 12px;
+    animation: slidein 0.35s ease;
+}
+.ledger-entry.fresh { background: #e8f5e9; }
+@keyframes slidein { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.le-icon { width: 30px; height: 30px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; flex-shrink: 0; }
+.le-info { flex: 1; min-width: 0; }
+.le-name { font-weight: 700; color: #222; }
+.le-detail { font-size: 10.5px; color: #777; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.le-time { font-size: 10px; color: #bbb; white-space: nowrap; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.18); border-radius: 4px; }
+.flow-body::-webkit-scrollbar-thumb { background: #128C7E; opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="header-logo">🎓</div>
+    <div class="header-text">
+        <h1>Amrita Vishwa Vidyapeetham — Alumni Verification System</h1>
+        <p>WhatsApp Flow Integration &nbsp;·&nbsp; Alumni Lifecycle Validation Pipeline &nbsp;·&nbsp; Meta WhatsApp Cloud API</p>
+    </div>
+    <div class="demo-badge"><div class="demo-dot"></div>INTERACTIVE DEMO</div>
+</div>
+
+<div class="main-layout">
+
+<!-- ═════════════ LEFT — WHATSAPP ═════════════ -->
+<div class="wa-col">
+    <div class="col-label">Alumni WhatsApp Experience</div>
+    <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+
+            <div class="wa-status">
+                <span>9:41</span>
+                <span style="display:flex;gap:6px;align-items:center;"><span>▌▌▌</span><span>WiFi</span><span>🔋</span></span>
+            </div>
+
+            <div class="wa-header">
+                <div class="wa-back">‹</div>
+                <div class="wa-avatar">🎓</div>
+                <div class="wa-info">
+                    <div class="wa-name">Amrita Alumni Relations</div>
+                    <div class="wa-online">online</div>
+                </div>
+                <div class="wa-icons"><span>📞</span><span>⋮</span></div>
+            </div>
+
+            <div class="wa-chat" id="chat">
+                <div class="date-chip"><span>TODAY</span></div>
+
+                <div class="msg recv">
+                    <div class="bubble">
+                        Hello! 👋 This is <strong>Amrita Alumni Relations</strong>.<br><br>
+                        We'd like to verify and update your profile in our alumni directory. Tap below — takes under 30 seconds! ✅
+                    </div>
+                    <div class="msg-time">9:30 AM</div>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="wa-cta-card" id="ctaCard" onclick="openFlow()">
+                    <div class="wa-cta-top">📋 &nbsp;Alumni Profile Verification</div>
+                    <div class="wa-cta-body">Tap to review and update your career details. Pre-filled with your latest info.</div>
+                    <div class="wa-cta-action">↗ Verify My Profile</div>
+                </div>
+
+                <!-- Post-submit messages -->
+                <div class="msg sent" id="msgSent" style="display:none">
+                    <div class="bubble">Profile updated ✓</div>
+                    <div class="msg-time" id="tSent"></div>
+                </div>
+                <div class="msg recv" id="msgReply" style="display:none">
+                    <div class="bubble">
+                        🎉 <strong>Thank you!</strong> Your alumni profile has been updated in the Amrita directory.<br><br>
+                        Your record is now live and synced. We appreciate it! 🙏
+                    </div>
+                    <div class="msg-time" id="tReply"></div>
+                </div>
+            </div>
+
+            <!-- ═══ FLOW OVERLAY — sibling to chat, full-height absolute ═══ -->
+            <div class="wa-flow-overlay" id="flowCard">
+
+                <div class="flow-hd">
+                    <div class="flow-hd-x" onclick="closeFlow()">✕</div>
+                    <div class="flow-hd-title">Amrita Alumni Update</div>
+                </div>
+
+                <div class="flow-body" id="flowBody">
+
+                    <!-- STEP 1: Phone lookup -->
+                    <div id="s1">
+                        <div class="flow-subtitle">
+                            <div class="flow-subtitle-main">**Verification &amp; Profile Update**</div>
+                            <div class="flow-subtitle-sub">Select your registered number to load your profile.</div>
+                        </div>
+                        <div class="fl">Registered Phone Number</div>
+                        <select class="demo-select" id="phoneSelect">
+                            <option value="">— Select for demo —</option>
+                            <option value="9876543210">+91 98765 43210 · Rahul Sharma</option>
+                            <option value="8765432109">+91 87654 32109 · Priya Nair</option>
+                            <option value="7654321098">+91 76543 21098 · Arjun Menon</option>
+                            <option value="6543210987">+91 65432 10987 · Sneha Krishnan</option>
+                        </select>
+                        <div class="ls" id="lkStatus"></div>
+                        <button class="btn-lookup" onclick="doLookup()">🔍 Lookup My Record</button>
+                    </div>
+
+                    <!-- STEP 2: Pre-filled form -->
+                    <div id="s2" style="display:none">
+                        <div class="flow-subtitle">
+                            <div class="flow-subtitle-main">**Verification &amp; Profile Update**</div>
+                            <div class="flow-subtitle-sub">Some fields are pre-filled based on your existing record.</div>
+                        </div>
+
+                        <div class="flow-section-hd">IDENTIFICATION &amp; BASELINE (Read-Only)</div>
+
+                        <div class="fl">Verified Identity</div>
+                        <div class="f-ro" id="fName">—</div>
+
+                        <div class="fl">Graduation Year &amp; Campus</div>
+                        <div class="f-ro" id="fGrad">—</div>
+
+                        <div class="flow-section-hd">PROFESSIONAL &amp; CONTACT DETAILS</div>
+
+                        <div class="fl">Current Employer</div>
+                        <div class="f-wrap">
+                            <input class="f-edit" id="fEmployer" type="text" placeholder="Enter Employer Name">
+                        </div>
+                        <div class="f-hint">Validation is enter cursor to changed.</div>
+
+                        <div class="fl">Current Location</div>
+                        <div class="f-wrap">
+                            <input class="f-edit" id="fLoc" type="text" placeholder="City, State">
+                            <span class="f-clearx" onclick="document.getElementById('fLoc').value=''">✕</span>
+                        </div>
+
+                        <div class="fl">Email Address</div>
+                        <div class="f-wrap">
+                            <input class="f-edit" id="fEmail" type="email" placeholder="your@email.com">
+                            <span class="f-pencil">✏</span>
+                        </div>
+
+                        <div class="fl">Current Designation</div>
+                        <div class="f-wrap">
+                            <input class="f-edit" id="fDesig" type="text" placeholder="e.g. Data Analyst">
+                            <span class="f-pencil">✏</span>
+                        </div>
+
+                        <div class="f-wrap">
+                            <input class="f-edit" id="fLinkedin" type="text" placeholder="LinkedIn Profile / Social Handle">
+                        </div>
+
+                        <div class="flow-footer">
+                            <button class="btn-clear" onclick="clearForm()">Clear Form</button>
+                            <button class="btn-update" onclick="submitForm()">Update Profile</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div><!-- /flow overlay -->
+
+            <div class="wa-bar">
+                <div style="color:#aaa;font-size:17px;">😊</div>
+                <div class="wa-typebox">Message</div>
+                <div style="color:#aaa;font-size:17px;">📎</div>
+                <div style="color:#aaa;font-size:17px;">📷</div>
+                <div class="wa-mic">🎤</div>
+            </div>
+
+        </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.3);font-size:11px;text-align:center;margin-top:10px;">
+        Click "Verify My Profile" → Select number → Fill in → "Update Profile" → Watch live admin sync
+    </div>
+</div>
+
+<!-- ═════════════ RIGHT — ADMIN ═════════════ -->
+<div class="admin-col">
+    <div class="col-label">Admin Dashboard — Office of Alumni Relations</div>
+
+    <!-- Master Directory -->
+    <div class="card">
+        <div class="card-hd">
+            <div>
+                <div class="card-title">📊 Alumni Master Directory</div>
+                <div class="card-sub">Phone-keyed lookup database · Live sync on every WhatsApp submission</div>
+            </div>
+            <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><div class="stat-val" id="sTotal">4</div><div class="stat-lbl">Total Alumni</div></div>
+            <div class="stat"><div class="stat-val" id="sVerified">2</div><div class="stat-lbl">Verified</div></div>
+            <div class="stat"><div class="stat-val" id="sPending">2</div><div class="stat-lbl">Pending</div></div>
+            <div class="stat"><div class="stat-val" id="sToday">0</div><div class="stat-lbl">Updates Today</div></div>
+        </div>
+
+        <div class="tbl-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Year</th>
+                        <th>Dept</th>
+                        <th>Designation</th>
+                        <th>Employer</th>
+                        <th>Location</th>
+                        <th>Email</th>
+                        <th>LinkedIn</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Webhook pipeline -->
+        <div class="pipeline">
+            <div class="pipe-node"><div class="pipe-icon p-wa">💬</div><div class="pipe-lbl">WhatsApp<br>Flow</div></div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-node"><div class="pipe-icon p-hook">⚡</div><div class="pipe-lbl">Sanitization<br>Webhook</div></div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-node"><div class="pipe-icon p-db">🗄️</div><div class="pipe-lbl">Alumni<br>Database</div></div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-node"><div class="pipe-icon p-sheets">📊</div><div class="pipe-lbl">Google<br>Sheets</div></div>
+            <div class="pipe-arr">→</div>
+            <div class="pipe-node"><div class="pipe-icon p-dl">📥</div><div class="pipe-lbl">Admin<br>Download</div></div>
+        </div>
+    </div>
+
+    <!-- Live Ledger -->
+    <div class="card">
+        <div class="ledger-hd">
+            <div class="ledger-title">📥 Live Submission Ledger</div>
+            <div class="live-badge"><div class="live-dot"></div>LIVE SYNC</div>
+        </div>
+        <div class="ledger-body" id="ledger">
+            <div class="ledger-empty" id="ledgerEmpty">
+                No submissions yet — submit the WhatsApp form to see updates appear here instantly
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- /main-layout -->
+
+<script>
+/* ════════════════════════════
+   MOCK DATABASE
+════════════════════════════ */
+const DB = {
+    "9876543210": {
+        name:"Rahul Sharma", year:"2022",
+        campus:"Amrita Vishwa Vidyapeetham, Coimbatore",
+        dept:"B.Tech — Computer Science & Engineering",
+        desig:"Data Analyst", employer:"Tata Consultancy Services",
+        loc:"Bangalore, Karnataka", email:"rahul.sharma.alum@amrita.edu",
+        linkedin:"linkedin.com/in/rahulsharma", status:"verified"
+    },
+    "8765432109": {
+        name:"Priya Nair", year:"2020",
+        campus:"Amrita Vishwa Vidyapeetham, Amritapuri",
+        dept:"B.Tech — Electronics & Communication",
+        desig:"Software Engineer", employer:"Infosys",
+        loc:"Pune, Maharashtra", email:"priya.nair.alum@amrita.edu",
+        linkedin:"linkedin.com/in/priyanair", status:"verified"
+    },
+    "7654321098": {
+        name:"Arjun Menon", year:"2021",
+        campus:"Amrita Vishwa Vidyapeetham, Kochi",
+        dept:"MBA — Business Administration",
+        desig:"Marketing Manager", employer:"Wipro Technologies",
+        loc:"Mumbai, Maharashtra", email:"arjun.menon.alum@amrita.edu",
+        linkedin:"", status:"pending"
+    },
+    "6543210987": {
+        name:"Sneha Krishnan", year:"2019",
+        campus:"Amrita Vishwa Vidyapeetham, Coimbatore",
+        dept:"B.Tech — Biotechnology",
+        desig:"Research Scientist", employer:"DRDO",
+        loc:"Hyderabad, Telangana", email:"sneha.krishnan.alum@amrita.edu",
+        linkedin:"", status:"pending"
+    }
+};
+
+let curPhone = null;
+let todayUpdates = 0;
+let ledgerHasEntries = false;
+
+/* ── Render table ── */
+function renderTable() {
+    const tb = document.getElementById('tBody');
+    tb.innerHTML = '';
+    for (const [ph, a] of Object.entries(DB)) {
+        const bc = a.status==='verified' ? 'b-verified' : a.status==='updated' ? 'b-updated' : a.status==='new' ? 'b-new' : 'b-pending';
+        const bt = a.status==='verified' ? '✅ Verified' : a.status==='updated' ? '🔄 Updated' : a.status==='new' ? '🆕 New' : '⏳ Pending';
+        const tr = document.createElement('tr');
+        tr.id = 'row_'+ph;
+        tr.innerHTML = `
+            <td class="nm">${a.name}</td>
+            <td class="ph">${ph.replace(/(\d{5})(\d{5})/,'+91 $1 $2')}</td>
+            <td>${a.year}</td>
+            <td class="sc">${a.dept}</td>
+            <td id="td_d_${ph}">${a.desig}</td>
+            <td id="td_e_${ph}">${a.employer}</td>
+            <td id="td_l_${ph}">${a.loc}</td>
+            <td class="sc" id="td_m_${ph}">${a.email}</td>
+            <td class="sc" id="td_li_${ph}">${a.linkedin||'—'}</td>
+            <td id="td_s_${ph}"><span class="badge ${bc}">${bt}</span></td>
+        `;
+        tb.appendChild(tr);
+    }
+    updateStats();
+}
+
+function updateStats() {
+    const all = Object.values(DB);
+    document.getElementById('sTotal').textContent    = all.length;
+    document.getElementById('sVerified').textContent = all.filter(a=>a.status==='verified'||a.status==='updated').length;
+    document.getElementById('sPending').textContent  = all.filter(a=>a.status==='pending').length;
+    document.getElementById('sToday').textContent    = todayUpdates;
+}
+
+/* ── WA Flow ── */
+function openFlow() {
+    // Reset to step 1 first
+    document.getElementById('s1').style.display = 'block';
+    document.getElementById('s2').style.display = 'none';
+    document.getElementById('lkStatus').className = 'ls';
+    document.getElementById('lkStatus').textContent = '';
+    document.getElementById('phoneSelect').value = '';
+    curPhone = null;
+    // Show overlay (hides chat behind it)
+    document.getElementById('flowCard').classList.add('open');
+    // Scroll flow body to top
+    document.getElementById('flowBody').scrollTop = 0;
+}
+
+function closeFlow() {
+    document.getElementById('flowCard').classList.remove('open');
+}
+
+function doLookup() {
+    const ph = document.getElementById('phoneSelect').value;
+    if (!ph) { alert('Please select a demo number.'); return; }
+
+    const st = document.getElementById('lkStatus');
+    st.className = 'ls ls-loading';
+    st.textContent = '🔍 Searching alumni database...';
+
+    setTimeout(() => {
+        const rec = DB[ph];
+        if (rec) {
+            st.className = 'ls ls-found';
+            st.textContent = `✅ Record found — Welcome, ${rec.name.split(' ')[0]}!`;
+            curPhone = ph;
+            setTimeout(() => {
+                // Fill read-only
+                document.getElementById('fName').textContent = rec.name.toUpperCase();
+                document.getElementById('fGrad').textContent = `${rec.year} - ${rec.campus.split(',')[0].trim()}`;
+                // Fill editable
+                document.getElementById('fEmployer').value  = rec.employer;
+                document.getElementById('fLoc').value       = rec.loc;
+                document.getElementById('fEmail').value     = rec.email;
+                document.getElementById('fDesig').value     = rec.desig;
+                document.getElementById('fLinkedin').value  = rec.linkedin||'';
+                // Show step 2
+                document.getElementById('s1').style.display = 'none';
+                document.getElementById('s2').style.display = 'block';
+                scrollChat();
+            }, 600);
+        }
+    }, 1100);
+}
+
+function clearForm() {
+    document.getElementById('fEmployer').value  = '';
+    document.getElementById('fLoc').value       = '';
+    document.getElementById('fEmail').value     = '';
+    document.getElementById('fDesig').value     = '';
+    document.getElementById('fLinkedin').value  = '';
+}
+
+function submitForm() {
+    if (!curPhone) return;
+
+    const desig    = document.getElementById('fDesig').value.trim()    || DB[curPhone].desig;
+    const employer = document.getElementById('fEmployer').value.trim() || DB[curPhone].employer;
+    const loc      = document.getElementById('fLoc').value.trim()      || DB[curPhone].loc;
+    const email    = document.getElementById('fEmail').value.trim()    || DB[curPhone].email;
+    const linkedin = document.getElementById('fLinkedin').value.trim();
+
+    // Update DB
+    DB[curPhone].desig    = desig;
+    DB[curPhone].employer = employer;
+    DB[curPhone].loc      = loc;
+    DB[curPhone].email    = email;
+    DB[curPhone].linkedin = linkedin;
+    DB[curPhone].status   = 'updated';
+
+    // Close overlay
+    document.getElementById('flowCard').classList.remove('open');
+
+    // WA confirmation messages
+    const now = new Date();
+    const ts = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    document.getElementById('msgSent').style.display  = 'flex';
+    document.getElementById('tSent').textContent = ts;
+    setTimeout(() => {
+        document.getElementById('msgReply').style.display = 'flex';
+        document.getElementById('tReply').textContent = ts;
+        scrollChat();
+    }, 700);
+
+    // Sync admin after short delay
+    setTimeout(() => syncAdmin(curPhone, now), 400);
+    scrollChat();
+}
+
+function syncAdmin(ph, ts) {
+    const a = DB[ph];
+
+    // Update table cells with highlight
+    const pairs = [
+        ['td_d_'+ph, a.desig],
+        ['td_e_'+ph, a.employer],
+        ['td_l_'+ph, a.loc],
+        ['td_m_'+ph, a.email],
+        ['td_li_'+ph, a.linkedin||'—'],
+    ];
+    pairs.forEach(([id, val]) => {
+        const td = document.getElementById(id);
+        if (td) { td.textContent = val; td.classList.add('changed'); }
+    });
+
+    // Update status badge
+    const sb = document.getElementById('td_s_'+ph);
+    if (sb) sb.innerHTML = '<span class="badge b-updated">🔄 Updated</span>';
+
+    // Stats
+    todayUpdates++;
+    updateStats();
+
+    // Ledger entry
+    if (!ledgerHasEntries) {
+        document.getElementById('ledgerEmpty').remove();
+        ledgerHasEntries = true;
+    }
+    const timeStr = ts.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    const entry = document.createElement('div');
+    entry.className = 'ledger-entry fresh';
+    entry.innerHTML = `
+        <div class="le-icon">💬</div>
+        <div class="le-info">
+            <div class="le-name">${a.name}</div>
+            <div class="le-detail">${a.desig} · ${a.employer} · ${a.loc}</div>
+        </div>
+        <div class="le-time">${timeStr}</div>
+    `;
+    const ledger = document.getElementById('ledger');
+    ledger.insertBefore(entry, ledger.firstChild);
+    setTimeout(() => entry.classList.remove('fresh'), 3000);
+}
+
+/* ── CSV Export ── */
+function exportCSV() {
+    const hdrs = ['Name','Phone','Graduation Year','Campus','Department','Designation','Employer','Location','Email','LinkedIn','Status'];
+    const rows = Object.entries(DB).map(([ph, a]) => [
+        a.name, '+91'+ph, a.year, a.campus.split(',')[0].trim(), a.dept,
+        a.desig, a.employer, a.loc, a.email, a.linkedin||'', a.status
+    ]);
+    const csv = [hdrs, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const el = document.createElement('a');
+    el.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    el.download = `amrita_alumni_export_${new Date().toISOString().split('T')[0]}.csv`;
+    el.click();
+}
+
+function scrollChat() {
+    setTimeout(() => {
+        const c = document.getElementById('chat');
+        c.scrollTop = c.scrollHeight;
+    }, 80);
+}
+
+/* ── Init ── */
+renderTable();
+</script>
+</body>
+</html>

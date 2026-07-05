@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amrita Alumni Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#009688;--teal-l:#E0F2F1;--teal-d:#00695C;
+  --navy:#1A2332;--navy2:#243044;
+  --sur:#F5F7FA;--card:#fff;--bdr:#DDE3EC;
+  --txt:#1A2332;--mut:#6B7A99;
+  --grn:#22C55E;--amb:#F59E0B;--red:#EF4444;--pur:#7C3AED;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sur);color:var(--txt);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/* header */
+.hdr{background:var(--navy);color:#fff;padding:0 24px;height:56px;display:flex;align-items:center;gap:12px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.hdr-logo{width:32px;height:32px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.hdr-title{font-size:14px;font-weight:600}
+.hdr-sub{font-size:11px;color:#8899BB}
+.hdr-sp{flex:1}
+.srv-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+.srv-dot.on{background:var(--grn)}
+.hdr-status{display:flex;align-items:center;gap:6px;font-size:12px;color:#8899BB}
+
+/* layout */
+.layout{display:flex;flex:1;overflow:hidden}
+
+/* sidebar */
+.sb{width:210px;flex-shrink:0;background:var(--navy2);display:flex;flex-direction:column;gap:1px;padding:12px 8px;overflow-y:auto}
+.sb-sec{font-size:10px;font-weight:700;color:#55667A;letter-spacing:.07em;text-transform:uppercase;padding:12px 10px 4px}
+.nav{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;font-size:13px;color:#99AABB;cursor:pointer;transition:all .15s;border:none;background:none;width:100%;text-align:left}
+.nav:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav.active{background:var(--teal);color:#fff}
+.nav-ic{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.nbadge{margin-left:auto;background:var(--amb);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+
+/* main */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.page{display:none;flex:1;flex-direction:column;overflow:hidden;padding:20px 24px;gap:16px;overflow-y:auto}
+.page.active{display:flex}
+/* chats page gets different layout */
+#page-chats.active{padding:0;overflow:hidden}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex-shrink:0}
+.scard{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:16px 18px}
+.slbl{font-size:11px;color:var(--mut);font-weight:500;margin-bottom:4px}
+.sval{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.ssub{font-size:11px;color:var(--mut);margin-top:3px}
+.c-teal{color:var(--teal)}.c-grn{color:var(--grn)}.c-amb{color:var(--amb)}.c-pur{color:var(--pur)}
+
+/* card */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;flex-shrink:0}
+.ch{padding:14px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bdr)}
+.ct{font-size:13px;font-weight:600;flex:1}
+.cb{padding:18px}
+
+/* table */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:9px 12px;background:var(--sur);font-size:10px;font-weight:600;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid var(--bdr);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #F0F3F8;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFBFD}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.b-pend{background:#FEF3C7;color:#92400E}
+.b-upd{background:#D1FAE5;color:#065F46}
+.b-new{background:#EDE9FE;color:#5B21B6}
+.b-sent{background:#DBEAFE;color:#1E40AF}
+.b-hand{background:#FCE7F3;color:#9D174D}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-pr{background:var(--teal);color:#fff}.btn-pr:hover{background:var(--teal-d)}
+.btn-sc{background:var(--sur);color:var(--txt);border:1px solid var(--bdr)}.btn-sc:hover{background:var(--bdr)}
+.btn-grn{background:#D1FAE5;color:#065F46}.btn-grn:hover{background:#A7F3D0}
+.btn-red{background:#FEE2E2;color:var(--red)}.btn-red:hover{background:#FECACA}
+.btn-sm{padding:4px 9px;font-size:11px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* inputs */
+.inp{padding:8px 11px;border:1px solid var(--bdr);border-radius:7px;font-size:13px;outline:none;background:var(--sur)}
+.inp:focus{border-color:var(--teal)}
+
+/* search */
+.sbar{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.sinp{flex:1;padding:7px 11px;border:1px solid var(--bdr);border-radius:7px;font-size:12px;outline:none;background:var(--sur)}
+.sinp:focus{border-color:var(--teal)}
+.fsel{padding:7px 10px;border:1px solid var(--bdr);border-radius:7px;font-size:12px;background:var(--sur);cursor:pointer;outline:none}
+
+/* upload */
+.uzone{border:2px dashed var(--bdr);border-radius:10px;padding:36px;text-align:center;cursor:pointer;transition:all .2s}
+.uzone:hover,.uzone.drag{border-color:var(--teal);background:var(--teal-l)}
+.uic{font-size:36px;margin-bottom:8px}
+
+/* log */
+.log-list{display:flex;flex-direction:column;max-height:260px;overflow-y:auto}
+.log-item{display:flex;gap:10px;padding:9px 14px;font-size:12px;border-bottom:1px solid #F0F3F8}
+.log-t{color:var(--mut);white-space:nowrap;font-family:monospace}
+.log-ok{color:var(--grn)}.log-err{color:var(--red)}
+
+/* progress */
+.prog{height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-top:8px;display:none}
+.prog-f{height:100%;background:var(--teal);border-radius:2px;transition:width .3s}
+
+/* ── CHATS ── */
+.chat-layout{display:flex;flex:1;overflow:hidden;height:100%}
+
+/* conv list */
+.conv-list{width:280px;flex-shrink:0;border-right:1px solid var(--bdr);display:flex;flex-direction:column;background:var(--card)}
+.conv-search{padding:10px 12px;border-bottom:1px solid var(--bdr)}
+.conv-search input{width:100%;padding:7px 10px;border:1px solid var(--bdr);border-radius:7px;font-size:12px;outline:none;background:var(--sur)}
+.conv-items{flex:1;overflow-y:auto}
+.conv-item{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;border-bottom:1px solid #F5F7FA;transition:background .1s}
+.conv-item:hover{background:var(--sur)}
+.conv-item.active{background:var(--teal-l)}
+.conv-av{width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.conv-av.hand{background:var(--pur)}
+.conv-info{flex:1;min-width:0}
+.conv-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-last{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.conv-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.conv-time{font-size:10px;color:var(--mut)}
+.conv-unread{background:var(--teal);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+
+/* chat panel */
+.chat-panel{flex:1;display:flex;flex-direction:column;background:#ECE5DD}
+.chat-top{background:var(--card);padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.chat-top-av{width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.chat-top-name{font-size:14px;font-weight:600;flex:1}
+.chat-top-phone{font-size:11px;color:var(--mut)}
+.toggle-hand{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;padding:6px 12px;border-radius:7px;border:1px solid var(--bdr);background:var(--sur);font-weight:500}
+.toggle-hand.on{background:#FCE7F3;border-color:#F9A8D4;color:#9D174D}
+.toggle-hand svg{transition:all .2s}
+
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px}
+.bubble-wrap{display:flex;flex-direction:column;max-width:68%}
+.bubble-wrap.me{align-self:flex-end;align-items:flex-end}
+.bubble-wrap.them{align-self:flex-start}
+.bubble{padding:9px 13px;border-radius:10px;font-size:13px;line-height:1.5;word-break:break-word}
+.bubble.me{background:#DCF8C6;border-bottom-right-radius:2px;color:#111}
+.bubble.them{background:#fff;border-bottom-left-radius:2px}
+.bubble.admin{background:#E8D5FF;border-bottom-right-radius:2px;color:#111}
+.btime{font-size:10px;color:var(--mut);margin-top:2px}
+.bubble.sys{background:rgba(0,0,0,.06);color:var(--mut);font-size:11px;padding:5px 10px;align-self:center;border-radius:20px;max-width:100%}
+
+.chat-input{display:flex;gap:8px;padding:12px 14px;background:var(--card);border-top:1px solid var(--bdr);flex-shrink:0}
+.chat-inp{flex:1;padding:9px 13px;border:1px solid var(--bdr);border-radius:20px;font-size:13px;outline:none;resize:none}
+.chat-inp:focus{border-color:var(--teal)}
+.chat-send{padding:9px 18px;background:var(--teal);color:#fff;border:none;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer}
+.chat-send:hover{background:var(--teal-d)}
+.chat-locked{text-align:center;padding:10px;font-size:12px;color:var(--mut);background:#F9F9F9;border-top:1px solid var(--bdr)}
+
+.no-conv{display:flex;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--mut)}
+.no-conv-ic{font-size:48px}
+
+/* empty state */
+.empty{text-align:center;padding:40px 20px;color:var(--mut)}
+.empty-ic{font-size:32px;margin-bottom:8px}
+
+/* modal */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center}
+.modal-ov.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:540px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 48px rgba(0,0,0,.2)}
+.mhdr{padding:18px 22px;border-bottom:1px solid var(--bdr);display:flex;align-items:center}
+.mtitle{font-size:15px;font-weight:700;flex:1}
+.mclose{background:none;border:none;font-size:20px;cursor:pointer;color:var(--mut)}
+.mbody{padding:18px 22px;display:flex;flex-direction:column;gap:12px}
+.cl-sec{font-size:10px;font-weight:700;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.cl-item{display:flex;gap:9px;align-items:flex-start}
+.cl-item input[type=checkbox]{margin-top:2px;width:14px;height:14px;accent-color:var(--teal);flex-shrink:0}
+.cl-item label{font-size:13px;line-height:1.5;cursor:pointer}
+.cl-item label span{display:block;font-size:11px;color:var(--mut);margin-top:1px}
+.mftr{padding:14px 22px;border-top:1px solid var(--bdr);display:flex;gap:8px;justify-content:flex-end}
+
+/* toast */
+#toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:11px 16px;border-radius:9px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;transform:translateY(70px);opacity:0;transition:all .25s}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* send-all progress row */
+.send-row{display:flex;gap:8px;align-items:center}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">A</div>
+  <div>
+    <div class="hdr-title">Amrita Alumni Directory</div>
+    <div class="hdr-sub">WhatsApp Flows Dashboard</div>
+  </div>
+  <div class="hdr-sp"></div>
+  <div class="hdr-status">
+    <div class="srv-dot" id="sDot"></div>
+    <span id="sStatus">Checking...</span>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sb">
+    <div class="sb-sec">Main</div>
+    <button class="nav active" onclick="go('directory',this)"><span class="nav-ic">📋</span>Directory<span class="nbadge" id="nbPending">0</span></button>
+    <button class="nav" onclick="go('chats',this)"><span class="nav-ic">💬</span>Chats<span class="nbadge" id="nbChats" style="display:none">0</span></button>
+    <button class="nav" onclick="go('send',this)"><span class="nav-ic">📤</span>Send Flow</button>
+    <button class="nav" onclick="go('upload',this)"><span class="nav-ic">📂</span>Upload CSV</button>
+    <div class="sb-sec">Tools</div>
+    <button class="nav" onclick="exportCSV()"><span class="nav-ic">⬇️</span>Export CSV</button>
+    <button class="nav" onclick="openCL()"><span class="nav-ic">✅</span>Client Checklist</button>
+  </nav>
+
+  <main class="main">
+
+    <!-- ── DIRECTORY ── -->
+    <div class="page active" id="page-directory">
+      <div class="stats" id="statsRow">
+        <div class="scard"><div class="slbl">Total Alumni</div><div class="sval c-teal" id="stTotal">—</div><div class="ssub">in database</div></div>
+        <div class="scard"><div class="slbl">Responses</div><div class="sval c-grn" id="stUpd">—</div><div class="ssub">profiles updated</div></div>
+        <div class="scard"><div class="slbl">Pending</div><div class="sval c-amb" id="stPend">—</div><div class="ssub">not responded</div></div>
+        <div class="scard"><div class="slbl">Flow Sent</div><div class="sval c-pur" id="stSent">—</div><div class="ssub">messages sent</div></div>
+      </div>
+      <div class="card" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+        <div class="ch">
+          <span class="ct">Alumni Directory</span>
+          <button class="btn btn-sc btn-sm" onclick="loadAlumni()">↻ Refresh</button>
+          <button class="btn btn-pr btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+        </div>
+        <div class="sbar">
+          <input class="sinp" placeholder="Search name, phone, employer…" id="srch" oninput="filterTbl()">
+          <select class="fsel" id="fSts" onchange="filterTbl()">
+            <option value="">All</option><option>Pending</option><option>Updated</option><option>New</option>
+          </select>
+        </div>
+        <div class="tw" style="flex:1;overflow:auto">
+          <table><thead><tr>
+            <th>Name</th><th>Phone</th><th>Year</th><th>Dept</th><th>Employer</th><th>Designation</th><th>Location</th><th>Status</th><th>Updated</th><th></th>
+          </tr></thead>
+          <tbody id="tbl"><tr><td colspan="10"><div class="empty"><div class="empty-ic">⏳</div>Loading…</div></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHATS ── -->
+    <div class="page" id="page-chats">
+      <div class="chat-layout">
+        <div class="conv-list">
+          <div class="conv-search"><input placeholder="Search conversations…" id="convSrch" oninput="filterConvs()"></div>
+          <div class="conv-items" id="convItems"><div class="empty" style="padding:30px 20px"><div class="empty-ic">💬</div>No conversations yet</div></div>
+        </div>
+        <div class="chat-panel" id="chatPanel">
+          <div class="no-conv" id="noConv"><div class="no-conv-ic">💬</div><div>Select a conversation</div></div>
+          <div id="activeChat" style="display:none;flex-direction:column;height:100%">
+            <div class="chat-top">
+              <div class="chat-top-av" id="chatAv">?</div>
+              <div style="flex:1">
+                <div class="chat-top-name" id="chatName"></div>
+                <div class="chat-top-phone" id="chatPhone"></div>
+              </div>
+              <button class="toggle-hand" id="handoffBtn" onclick="toggleHandoff()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Human Handoff
+              </button>
+            </div>
+            <div class="chat-msgs" id="chatMsgs"></div>
+            <div id="chatInputArea">
+              <div class="chat-locked" id="chatLocked">🤖 Bot is handling this conversation. Enable Human Handoff to reply manually.</div>
+              <div class="chat-input" id="chatInput" style="display:none">
+                <textarea class="chat-inp" id="replyInp" rows="1" placeholder="Type a reply…" onkeydown="handleReplyKey(event)"></textarea>
+                <button class="chat-send" onclick="sendReply()">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEND ── -->
+    <div class="page" id="page-send">
+      <div class="card">
+        <div class="ch"><span class="ct">Send Alumni Verification Flow</span></div>
+        <div class="cb" style="display:flex;flex-direction:column;gap:18px">
+
+          <!-- Single send -->
+          <div>
+            <p style="font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Single Number</p>
+            <div style="display:flex;gap:8px">
+              <input class="inp" style="flex:1" id="sPhone" placeholder="e.g. 919876543210">
+              <button class="btn btn-pr" onclick="sendOne(document.getElementById('sPhone').value)">Send Flow</button>
+            </div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid var(--bdr)">
+
+          <!-- Send to all pending in DB -->
+          <div>
+            <p style="font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Send to All Pending (from Directory)</p>
+            <div id="bulkInfo" style="font-size:13px;font-weight:500;margin-bottom:10px"></div>
+            <button class="btn btn-pr" id="bulkBtn" onclick="sendAll()">📤 Send to All Pending</button>
+            <div class="prog" id="prog"><div class="prog-f" id="progF" style="width:0%"></div></div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid var(--bdr)">
+
+          <!-- Bulk send from CSV -->
+          <div>
+            <p style="font-size:12px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Bulk Send from CSV</p>
+            <p style="font-size:12px;color:var(--mut);margin-bottom:10px">Upload a CSV with a <code style="background:var(--sur);padding:1px 5px;border-radius:4px">phone</code> column — sends the flow to every number instantly without importing to directory.</p>
+            <div class="uzone" id="bulkUzone" style="padding:20px" onclick="document.getElementById('bulkCsvF').click()"
+                 ondragover="event.preventDefault();this.classList.add('drag')"
+                 ondragleave="this.classList.remove('drag')"
+                 ondrop="dropBulkFile(event)">
+              <div style="font-size:22px;margin-bottom:4px">📤</div>
+              <div style="font-size:13px;font-weight:500">Click or drag CSV to send bulk flow</div>
+              <div style="font-size:11px;color:var(--mut);margin-top:3px">CSV must have a <strong>phone</strong> column (with country code)</div>
+            </div>
+            <input type="file" id="bulkCsvF" accept=".csv" style="display:none" onchange="bulkFileChosen(event)">
+
+            <div id="bulkCsvPrev" style="display:none;margin-top:12px">
+              <div id="bulkCsvInfo" style="font-size:13px;font-weight:500;margin-bottom:10px"></div>
+              <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--mut);margin-bottom:12px;max-height:120px;overflow-y:auto" id="bulkPhoneList"></div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn btn-pr" id="bulkCsvSendBtn" onclick="sendFromCSV()">📤 Send to All in CSV</button>
+                <button class="btn btn-sc" onclick="document.getElementById('bulkCsvPrev').style.display='none'">Cancel</button>
+                <span id="bulkCsvProgress" style="font-size:12px;color:var(--mut)"></span>
+              </div>
+              <div class="prog" id="bulkCsvProg" style="margin-top:8px"><div class="prog-f" id="bulkCsvProgF" style="width:0%"></div></div>
+            </div>
+          </div>
+
+          <!-- Daily limit info -->
+          <div style="background:#FEF3C7;border-radius:9px;padding:12px 14px;font-size:12px;color:#92400E">
+            <strong>📊 Daily Sending Limits:</strong> New numbers start at <strong>1,000/day (Tier 1)</strong>. Auto-upgrades to <strong>10,000/day (Tier 2)</strong> after consistent sending. For 1,500–4,000/day campaigns you need Tier 2 + an approved WhatsApp Message Template.
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="flex:1">
+        <div class="ch"><span class="ct">Send Log</span></div>
+        <div class="log-list" id="sendLog"><div class="log-item"><span style="color:var(--mut);font-size:12px">No activity yet.</span></div></div>
+      </div>
+    </div>
+
+    <!-- ── UPLOAD ── -->
+    <div class="page" id="page-upload">
+      <div class="card">
+        <div class="ch"><span class="ct">Upload Alumni CSV</span></div>
+        <div class="cb" style="display:flex;flex-direction:column;gap:14px">
+          <div class="uzone" id="uzone" onclick="document.getElementById('csvF').click()"
+               ondragover="event.preventDefault();this.classList.add('drag')"
+               ondragleave="this.classList.remove('drag')"
+               ondrop="dropFile(event)">
+            <div class="uic">📂</div>
+            <div style="font-size:14px;font-weight:500;margin-bottom:4px">Click to upload or drag & drop</div>
+            <div style="font-size:12px;color:var(--mut)">Any CSV format — columns auto-detected. Phone column required.</div>
+          </div>
+          <input type="file" id="csvF" accept=".csv" style="display:none" onchange="fileChosen(event)">
+          <div id="csvPrev" style="display:none">
+            <div id="csvPrevTbl" style="overflow-x:auto"></div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="btn btn-pr" onclick="importCSV()">✓ Import to Database</button>
+              <button class="btn btn-sc" onclick="document.getElementById('csvPrev').style.display='none'">Cancel</button>
+            </div>
+          </div>
+          <div style="background:var(--teal-l);border-radius:9px;padding:12px 14px">
+            <div style="font-size:12px;font-weight:600;color:var(--teal-d);margin-bottom:4px">Auto-detects any CSV format</div>
+            <div style="font-size:11px;color:var(--teal-d)">Column names like "Phone Number", "Mobile No", "Name", "Full Name", "Batch", "Department", "Company" etc. are all recognized automatically. Only a phone column is required.</div>
+          </div>
+          <button class="btn btn-sc btn-sm" onclick="dlTemplate()" style="align-self:flex-start">⬇ Download Template</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Checklist Modal -->
+<div class="modal-ov" id="clModal">
+  <div class="modal">
+    <div class="mhdr"><span class="mtitle">✅ Client Onboarding Checklist</span><button class="mclose" onclick="closeCL()">×</button></div>
+    <div class="mbody">
+      <p style="font-size:13px;color:var(--mut)">Share with the client to collect everything needed before going live.</p>
+      <div class="cl-sec">Meta / WhatsApp Setup</div>
+      <div class="cl-item"><input type="checkbox" id="c1"><label for="c1">Meta Business Manager access granted to developer<span>Add murtaza.special623@gmail.com as admin</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c2"><label for="c2">WhatsApp Business Account (WABA) confirmed<span>WABA ID shared with developer</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c3"><label for="c3">Phone Number ID provided<span>Business Manager → WhatsApp Accounts → Phone Numbers</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c4"><label for="c4">System User Token generated<span>whatsapp_business_messaging + whatsapp_business_management permissions</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c5"><label for="c5">Phone number migrated from BSP to direct API<span>If using AiSensy/Wati/Interakt — ask them to deregister</span></label></div>
+      <div class="cl-sec">Alumni Database</div>
+      <div class="cl-item"><input type="checkbox" id="c6"><label for="c6">Alumni CSV file provided<span>Name, Phone (with country code), Year, Department — minimum</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c7"><label for="c7">Phone numbers verified to be on WhatsApp<span>All numbers should be active WhatsApp accounts</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c8"><label for="c8">Alumni opted in / previously messaged the business<span>Required by WhatsApp policy before sending outbound messages</span></label></div>
+      <div class="cl-sec">WhatsApp Template (for Broadcast)</div>
+      <div class="cl-item"><input type="checkbox" id="c9"><label for="c9">Message template text approved by client<span>Template must be submitted to Meta — category: Utility</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c10"><label for="c10">Template approved by Meta<span>Takes 24–48 hours</span></label></div>
+      <div class="cl-sec">Technical Go-Live</div>
+      <div class="cl-item"><input type="checkbox" id="c11"><label for="c11">Webhook server deployed to production<span>Railway/Render/VPS — not ngrok (testing only)</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c12"><label for="c12">WhatsApp Flow published (not Draft)<span>Requires Meta review — usually a few hours for forms</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c13"><label for="c13">Incoming message webhook configured<span>App → WhatsApp → Configuration → Webhook URL set to /wa-webhook</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c14"><label for="c14">End-to-end test completed<span>Send → Open → Fill → Submit → Check dashboard</span></label></div>
+      <div class="cl-item"><input type="checkbox" id="c15"><label for="c15">Client trained on dashboard<span>Upload CSV, send flows, view chats, human handoff, export</span></label></div>
+    </div>
+    <div class="mftr">
+      <button class="btn btn-sc" onclick="copyCL()">📋 Copy as Text</button>
+      <button class="btn btn-pr" onclick="window.print()">🖨 Print / PDF</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = 'http://localhost:4567';
+let allAlumni = [], allConvs = [], activePh = null, csvRows = [];
+
+// ── Init ──────────────────────────────────────────────────────────────────
+async function init() {
+  await ping();
+  await loadAlumni();
+  await loadConvs();
+  setInterval(loadConvs, 8000); // poll chats every 8s
+}
+
+async function ping() {
+  try {
+    const r = await fetch(`${API}/`);
+    if (r.ok) { document.getElementById('sDot').classList.add('on'); document.getElementById('sStatus').textContent = 'Server online'; }
+  } catch { document.getElementById('sStatus').textContent = 'Server offline — start server'; }
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function go(name, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ── Alumni ────────────────────────────────────────────────────────────────
+async function loadAlumni() {
+  try {
+    const r = await fetch(`${API}/api/alumni`);
+    allAlumni = await r.json();
+    renderTbl(allAlumni); updateStats(allAlumni); updateBulk(allAlumni);
+  } catch { renderTbl(null); }
+}
+
+function updateStats(d) {
+  document.getElementById('stTotal').textContent = d.length;
+  document.getElementById('stUpd').textContent = d.filter(a => a.status === 'Updated').length;
+  const pend = d.filter(a => a.status !== 'Updated').length;
+  document.getElementById('stPend').textContent = pend;
+  document.getElementById('stSent').textContent = d.filter(a => a.flowSent).length;
+  document.getElementById('nbPending').textContent = pend;
+}
+
+function updateBulk(d) {
+  const n = d.filter(a => !a.flowSent && a.status !== 'Updated').length;
+  document.getElementById('bulkInfo').textContent = n + ' alumni pending — no flow sent yet.';
+}
+
+function renderTbl(data) {
+  const tb = document.getElementById('tbl');
+  if (!data) { tb.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-ic">⚠️</div>Cannot reach server at localhost:4567</div></td></tr>'; return; }
+  if (!data.length) { tb.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-ic">📭</div>No alumni yet — upload a CSV to begin</div></td></tr>'; return; }
+  tb.innerHTML = data.map(a => `<tr>
+    <td style="font-weight:500">${x(a.name||'—')}</td>
+    <td style="font-family:monospace;font-size:11px;color:var(--mut)">${x(a.phone||'')}</td>
+    <td style="color:var(--mut)">${x(a.year||'—')}</td>
+    <td style="color:var(--mut)">${x(a.dept||'—')}</td>
+    <td>${x(a.employer||'—')}</td>
+    <td style="color:var(--mut)">${x(a.designation||'—')}</td>
+    <td style="color:var(--mut)">${x(a.location||'—')}</td>
+    <td>${badge(a.status)}</td>
+    <td style="font-size:11px;color:var(--mut)">${a.lastUpdated ? new Date(a.lastUpdated).toLocaleDateString() : '—'}</td>
+    <td><button class="btn btn-grn btn-sm" onclick="sendOne('${x(a.phone)}')">Send</button></td>
+  </tr>`).join('');
+}
+
+function badge(s) {
+  const m = {Pending:'b-pend',Updated:'b-upd',New:'b-new'};
+  return `<span class="badge ${m[s]||'b-sent'}">${s||'Pending'}</span>`;
+}
+
+function filterTbl() {
+  const q = document.getElementById('srch').value.toLowerCase();
+  const s = document.getElementById('fSts').value;
+  renderTbl(allAlumni.filter(a => {
+    const mq = !q || [a.name,a.phone,a.employer,a.location,a.designation].some(v=>(v||'').toLowerCase().includes(q));
+    return mq && (!s || a.status === s);
+  }));
+}
+
+// ── Conversations ─────────────────────────────────────────────────────────
+async function loadConvs() {
+  try {
+    const r = await fetch(`${API}/api/conversations`);
+    allConvs = await r.json();
+    renderConvList(allConvs);
+    if (activePh) refreshActiveChat();
+  } catch {}
+}
+
+function renderConvList(convs) {
+  const el = document.getElementById('convItems');
+  const q = document.getElementById('convSrch').value.toLowerCase();
+  const filtered = convs.filter(c => !q || (c.name||'').toLowerCase().includes(q) || c.phone.includes(q));
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty" style="padding:30px 16px"><div class="empty-ic">💬</div>No conversations yet.<br><small style="font-size:11px">Messages from alumni appear here</small></div>';
+    return;
+  }
+  el.innerHTML = filtered.map(c => {
+    const init = (c.name||c.phone)[0].toUpperCase();
+    const time = c.lastTs ? new Date(c.lastTs).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+    return `<div class="conv-item ${activePh===c.phone?'active':''}" onclick="openConv('${x(c.phone)}')">
+      <div class="conv-av ${c.handoff?'hand':''}">${init}</div>
+      <div class="conv-info">
+        <div class="conv-name">${x(c.name||c.phone)}</div>
+        <div class="conv-last">${x(c.lastMessage||'')}</div>
+      </div>
+      <div class="conv-meta">
+        <span class="conv-time">${time}</span>
+        ${c.handoff ? '<span class="badge b-hand" style="font-size:9px">Handoff</span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+  // update badge
+  const nb = document.getElementById('nbChats');
+  nb.textContent = filtered.length;
+  nb.style.display = filtered.length ? 'inline' : 'none';
+}
+
+function filterConvs() { renderConvList(allConvs); }
+
+async function openConv(phone) {
+  activePh = phone;
+  document.getElementById('noConv').style.display = 'none';
+  document.getElementById('activeChat').style.display = 'flex';
+  renderConvList(allConvs);
+  const conv = allConvs.find(c => c.phone === phone);
+  if (conv) renderChat(conv);
+}
+
+async function refreshActiveChat() {
+  if (!activePh) return;
+  const conv = allConvs.find(c => c.phone === activePh);
+  if (conv) renderChat(conv);
+}
+
+function renderChat(conv) {
+  document.getElementById('chatAv').textContent = (conv.name||conv.phone)[0].toUpperCase();
+  document.getElementById('chatAv').className = 'chat-top-av' + (conv.handoff ? ' hand' : '');
+  document.getElementById('chatName').textContent = conv.name || conv.phone;
+  document.getElementById('chatPhone').textContent = conv.phone;
+
+  const btn = document.getElementById('handoffBtn');
+  btn.className = 'toggle-hand' + (conv.handoff ? ' on' : '');
+  btn.innerHTML = btn.innerHTML.replace(/Human Handoff|Bot Active/, conv.handoff ? 'Human Handoff ON' : 'Bot Active');
+
+  const msgs = document.getElementById('chatMsgs');
+  msgs.innerHTML = (conv.messages || []).map(m => {
+    const isMe = m.from === 'admin';
+    const isFlow = m.type === 'flow_submission';
+    if (isFlow) return `<div class="bubble sys">📋 Alumni submitted the verification form</div>`;
+    return `<div class="bubble-wrap ${isMe?'me':'them'}">
+      <div class="bubble ${isMe?'admin':'them'}">${x(m.text)}</div>
+      <div class="btime">${new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
+    </div>`;
+  }).join('');
+  msgs.scrollTop = msgs.scrollHeight;
+
+  document.getElementById('chatLocked').style.display = conv.handoff ? 'none' : 'block';
+  document.getElementById('chatInput').style.display = conv.handoff ? 'flex' : 'none';
+}
+
+async function toggleHandoff() {
+  if (!activePh) return;
+  const conv = allConvs.find(c => c.phone === activePh);
+  const newVal = !(conv?.handoff);
+  await fetch(`${API}/api/conversations/${activePh}/handoff`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ handoff: newVal })
+  });
+  toast(newVal ? '🙋 Human handoff ON — you can reply now' : '🤖 Bot resumed control');
+  await loadConvs();
+}
+
+async function sendReply() {
+  const inp = document.getElementById('replyInp');
+  const text = inp.value.trim();
+  if (!text || !activePh) return;
+  inp.value = '';
+  const r = await fetch(`${API}/api/conversations/${activePh}/reply`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ text })
+  });
+  const d = await r.json();
+  if (d.success) await loadConvs();
+  else toast('Send failed: ' + (d.error || 'unknown error'));
+}
+
+function handleReplyKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendReply(); }
+}
+
+// ── Send Flow ─────────────────────────────────────────────────────────────
+async function sendOne(phone) {
+  if (!phone) return toast('Enter a phone number');
+  toast(`Sending to ${phone}…`);
+  const r = await fetch(`${API}/api/send-flow`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ phone })
+  });
+  const d = await r.json();
+  const ok = !!d.messages;
+  toast(ok ? `✓ Sent to ${phone}` : `✗ ${d.error?.message || JSON.stringify(d)}`);
+  addLog(`${phone} — ${ok ? '✓ sent' : '✗ ' + (d.error?.message||'failed')}`, ok);
+  if (ok) await loadAlumni();
+}
+
+async function sendAll() {
+  const pending = allAlumni.filter(a => !a.flowSent && a.status !== 'Updated');
+  if (!pending.length) return toast('No pending alumni');
+  if (!confirm(`Send flow to ${pending.length} alumni? This will take ~${pending.length}s.`)) return;
+  document.getElementById('bulkBtn').disabled = true;
+  document.getElementById('prog').style.display = 'block';
+  for (let i = 0; i < pending.length; i++) {
+    const a = pending[i];
+    try {
+      const r = await fetch(`${API}/api/send-flow`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ phone: a.phone })
+      });
+      const d = await r.json();
+      addLog(`${a.name||a.phone} — ${d.messages ? '✓ sent' : '✗ ' + (d.error?.message||'failed')}`, !!d.messages);
+    } catch(e) { addLog(`${a.name||a.phone} — ✗ ${e.message}`, false); }
+    document.getElementById('progF').style.width = ((i+1)/pending.length*100)+'%';
+    await sleep(1100);
+  }
+  document.getElementById('bulkBtn').disabled = false;
+  await loadAlumni();
+  toast(`Done — contacted ${pending.length} alumni`);
+}
+
+function addLog(msg, ok) {
+  const el = document.getElementById('sendLog');
+  if (el.querySelector('[data-empty]')) el.innerHTML = '';
+  el.insertAdjacentHTML('afterbegin',`<div class="log-item"><span class="log-t">${new Date().toLocaleTimeString()}</span><span class="${ok?'log-ok':'log-err'}">${x(msg)}</span></div>`);
+}
+
+// ── CSV Upload ────────────────────────────────────────────────────────────
+function dropFile(e) { e.preventDefault(); document.getElementById('uzone').classList.remove('drag'); const f=e.dataTransfer.files[0]; if(f) parseCSV(f); }
+function fileChosen(e) { const f=e.target.files[0]; if(f) parseCSV(f); }
+
+// Maps any CSV header to our internal field name
+const CSV_FIELD_MAP = {
+  phone:       ['phone','phone number','mobile','mobile no','mobile number','contact','whatsapp','mob','cell','telephone','tel','ph','ph no','phone no','phonenumber','mobilenumber','contact number','contactno','whatsapp number'],
+  name:        ['name','full name','fullname','alumni name','student name','alumnus name','candidate name','alumni','member name'],
+  year:        ['year','grad year','graduation year','batch','year of graduation','pass out year','batch year','yog','passout','passout year','graduating year','convocation year'],
+  dept:        ['dept','department','branch','course','stream','programme','program','discipline','faculty','field','specialization','major'],
+  employer:    ['employer','company','organization','organisation','current employer','workplace','company name','employer name','work','current company','office'],
+  designation: ['designation','job title','jobtitle','position','role','title','current designation','job role','post','current role','current position'],
+  location:    ['location','city','current location','place','current city','residing city','state','residing','current city/state','city/state','address'],
+  email:       ['email','email address','e-mail','mail','email id','e mail','emailid','emailaddress'],
+  linkedin:    ['linkedin','linkedin url','linkedinurl','social handle','linkedin profile','linkedin id','social','social media','handle','profile url','social url']
+};
+
+function mapCsvHeaders(rawHeaders) {
+  const mapping = {}; // our field -> csv column index
+  rawHeaders.forEach((h, i) => {
+    const norm = h.toLowerCase().trim().replace(/[_\-]/g,' ').replace(/\s+/g,' ');
+    for (const [field, variants] of Object.entries(CSV_FIELD_MAP)) {
+      if (!mapping[field] && variants.includes(norm)) mapping[field] = i;
+    }
+  });
+  return mapping;
+}
+
+function splitCsvLine(line) {
+  const vals = []; let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') { inQ = !inQ; }
+    else if (line[i] === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+    else cur += line[i];
+  }
+  vals.push(cur.trim());
+  return vals;
+}
+
+function parseCSV(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.trim().split(/\r?\n/);
+    const rawHdrs = splitCsvLine(lines[0]).map(h => h.replace(/^"|"$/g,''));
+    const mapping = mapCsvHeaders(rawHdrs);
+
+    if (mapping.phone === undefined) {
+      toast('Could not detect a phone column. Check your CSV headers.'); return;
+    }
+
+    csvRows = lines.slice(1).map(l => {
+      const vals = splitCsvLine(l).map(v => v.replace(/^"|"$/g,''));
+      const o = {};
+      for (const [field, idx] of Object.entries(mapping)) o[field] = vals[idx] || '';
+      return o;
+    }).filter(r => r.phone && r.phone.length > 4);
+
+    // Build mapping summary
+    const detected = Object.entries(mapping).map(([f,i]) => `<b>${f}</b> ← "${rawHdrs[i]}"`).join(' &nbsp;|&nbsp; ');
+    const cols = Object.keys(mapping).slice(0,5);
+    document.getElementById('csvPrevTbl').innerHTML = `
+      <p style="font-size:12px;color:var(--mut);margin-bottom:8px">Detected columns: ${detected}</p>
+      <p style="font-size:13px;margin-bottom:8px"><strong>${csvRows.length}</strong> rows ready to import.</p>
+      <div style="overflow-x:auto"><table style="font-size:12px">
+        <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>${csvRows.slice(0,5).map(r=>`<tr>${cols.map(c=>`<td>${x(r[c]||'')}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table></div>
+      ${csvRows.length>5?`<p style="font-size:11px;color:var(--mut);margin-top:4px">…and ${csvRows.length-5} more rows</p>`:''}`;
+    document.getElementById('csvPrev').style.display = 'block';
+  };
+  reader.readAsText(file);
+}
+
+async function importCSV() {
+  if (!csvRows.length) return;
+  const r = await fetch(`${API}/api/alumni/import-csv`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ rows: csvRows })
+  });
+  const d = await r.json();
+  if (d.success) {
+    toast(`✓ ${d.added} added, ${d.updated} updated`);
+    document.getElementById('csvPrev').style.display = 'none';
+    await loadAlumni(); go('directory', document.querySelector('.nav'));
+  } else toast('Import failed');
+}
+
+function dlTemplate() {
+  const csv='name,phone,year,dept,employer,designation,location,email,linkedin\nRahul Sharma,919876543210,2018,Computer Science,TCS,Software Engineer,Bangalore,rahul@example.com,linkedin.com/in/rahul';
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='alumni_template.csv'; a.click();
+}
+
+// ── Bulk Send from CSV ────────────────────────────────────────────────────
+let bulkPhones = [];
+
+function dropBulkFile(e) { e.preventDefault(); document.getElementById('bulkUzone').classList.remove('drag'); const f=e.dataTransfer.files[0]; if(f) parseBulkCSV(f); }
+function bulkFileChosen(e) { const f=e.target.files[0]; if(f) parseBulkCSV(f); }
+
+function parseBulkCSV(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const lines = e.target.result.trim().split(/\r?\n/);
+    const rawHdrs = splitCsvLine(lines[0]).map(h => h.replace(/^"|"$/g,''));
+    const mapping = mapCsvHeaders(rawHdrs);
+    const phoneIdx = mapping.phone;
+    if (phoneIdx === undefined) { toast('Could not detect a phone column in this CSV.'); return; }
+    bulkPhones = lines.slice(1).map(l => {
+      const vals = splitCsvLine(l).map(v => v.replace(/^"|"$/g,''));
+      return vals[phoneIdx];
+    }).filter(p => p && p.length > 5);
+
+    document.getElementById('bulkCsvInfo').textContent = `${bulkPhones.length} phone numbers found in CSV`;
+    document.getElementById('bulkPhoneList').innerHTML = bulkPhones.slice(0,20).map(p=>`<div style="padding:2px 0;border-bottom:1px solid var(--bdr)">${x(p)}</div>`).join('') + (bulkPhones.length>20 ? `<div style="padding:4px 0;color:var(--mut)">…and ${bulkPhones.length-20} more</div>` : '');
+    document.getElementById('bulkCsvPrev').style.display = 'block';
+    document.getElementById('bulkCsvProg').style.display = 'none';
+    document.getElementById('bulkCsvProgF').style.width = '0%';
+  };
+  reader.readAsText(file);
+}
+
+async function sendFromCSV() {
+  if (!bulkPhones.length) return;
+  if (!confirm(`Send flow to ${bulkPhones.length} numbers? This will take ~${Math.ceil(bulkPhones.length/60)} minutes.`)) return;
+
+  const btn = document.getElementById('bulkCsvSendBtn');
+  const prog = document.getElementById('bulkCsvProg');
+  const fill = document.getElementById('bulkCsvProgF');
+  const status = document.getElementById('bulkCsvProgress');
+  btn.disabled = true;
+  prog.style.display = 'block';
+
+  let sent=0, failed=0;
+  for (let i=0; i<bulkPhones.length; i++) {
+    const phone = bulkPhones[i];
+    try {
+      const r = await fetch(`${API}/api/send-flow`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ phone })
+      });
+      const d = await r.json();
+      const ok = !!d.messages;
+      if (ok) sent++; else failed++;
+      addLog(`${phone} — ${ok ? '✓ sent' : '✗ ' + (d.error?.message||'failed')}`, ok);
+    } catch(e) { failed++; addLog(`${phone} — ✗ ${e.message}`, false); }
+
+    fill.style.width = ((i+1)/bulkPhones.length*100)+'%';
+    status.textContent = `${i+1}/${bulkPhones.length} — ${sent} sent, ${failed} failed`;
+    await sleep(1100);
+  }
+
+  btn.disabled = false;
+  toast(`Done — ${sent} sent, ${failed} failed`);
+  await loadAlumni();
+}
+
+function exportCSV() { window.open(`${API}/api/alumni/export-csv`,'_blank'); }
+
+// ── Checklist ─────────────────────────────────────────────────────────────
+function openCL() { document.getElementById('clModal').classList.add('open'); }
+function closeCL() { document.getElementById('clModal').classList.remove('open'); }
+function copyCL() {
+  const items = [...document.querySelectorAll('.cl-item label')].map(l=>l.childNodes[0].textContent.trim());
+  navigator.clipboard.writeText('Amrita Alumni WhatsApp — Client Checklist\n\n'+items.map(i=>`[ ] ${i}`).join('\n'));
+  toast('Copied to clipboard');
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────
+function x(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+function toast(msg) {
+  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+init();
+</script>
+</body>
+</html>
