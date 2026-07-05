@@ -116,6 +116,41 @@ function encryptResponse(data, aesKey, iv, algo) {
   return encrypted.toString('base64');
 }
 
+async function sendTemplateToPhone(phone) {
+  const { default: fetch } = await import('node-fetch').catch(() => ({ default: null }));
+  const fetchFn = fetch || global.fetch;
+  const alumni = findAlumni(phone);
+  const name = alumni?.name || 'Alumni';
+  const body = {
+    messaging_product: 'whatsapp',
+    to: normalizePhone(phone),
+    type: 'template',
+    template: {
+      name: 'alumni_msg',
+      language: { code: 'en' },
+      components: [
+        {
+          type: 'header',
+          parameters: [{ type: 'image', image: { link: 'https://amritaalumnichatbot-production.up.railway.app/amrita_banner.png' } }]
+        },
+        {
+          type: 'body',
+          parameters: [
+            { type: 'text', text: name },
+            { type: 'text', text: 'Jay, Sreejith' }
+          ]
+        }
+      ]
+    }
+  };
+  const res = await fetchFn(`https://graph.facebook.com/v20.0/${PHONE_NUMBER_ID}/messages`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${WA_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
 async function sendFlowToPhone(phone) {
   const { default: fetch } = await import('node-fetch').catch(() => ({ default: null }));
   const fetchFn = fetch || global.fetch;
@@ -125,14 +160,12 @@ async function sendFlowToPhone(phone) {
     type: 'interactive',
     interactive: {
       type: 'flow',
-      header: { type: 'text', text: 'Alumni Directory Update' },
-      body: { text: 'Dear Alumni, Amrita University is updating its official alumni directory. Please take a moment to verify and update your professional details. It only takes 2 minutes!' },
+      body: { text: 'Tap below to update your alumni profile. Your details are pre-filled.' },
       footer: { text: 'Amrita Alumni Association' },
       action: {
         name: 'flow',
         parameters: {
           flow_message_version: '3',
-          ...(FLOW_MODE === 'draft' ? { mode: 'draft' } : {}),
           flow_token: `alumni_${Date.now()}`,
           flow_id: FLOW_ID,
           flow_cta: 'Update My Profile',
@@ -270,7 +303,7 @@ app.post('/api/send-flow', async (req, res) => {
   const { phone } = req.body;
   if (!phone) return res.status(400).json({ error: 'Phone required' });
   try {
-    const result = await sendFlowToPhone(phone);
+    const result = await sendTemplateToPhone(phone);
     if (result.messages) {
       const db = loadDb();
       const p = normalizePhone(phone);
@@ -289,7 +322,7 @@ app.post('/api/send-flow-all', async (req, res) => {
   const results = [];
   for (const a of pending) {
     try {
-      const r = await sendFlowToPhone(a.phone);
+      const r = await sendTemplateToPhone(a.phone);
       results.push({ phone: a.phone, success: !!r.messages, result: r });
       await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (e) {
@@ -328,13 +361,18 @@ app.post('/wa-webhook', (req, res) => {
     for (const msg of messages) {
       const phone = msg.from;
       const name = contacts.find(c => c.wa_id === phone)?.profile?.name || phone;
-      const text = msg.text?.body || msg.type || '[media]';
-      // Update name in convs if we have it
+      const text = msg.text?.body || msg.button?.text || msg.type || '[media]';
       const convs = loadConvs();
       if (convs[phone]) convs[phone].name = name;
       saveConvs(convs);
       addMessage(phone, 'user', text, msg.type);
       console.log(`Incoming from ${phone} (${name}): ${text}`);
+
+      // Auto-send flow when alumni tap "Update Now" quick reply
+      const isUpdateNow = msg.type === 'button' && msg.button?.text?.toLowerCase().includes('update');
+      if (isUpdateNow) {
+        sendFlowToPhone(phone).catch(e => console.error('Auto-flow error:', e.message));
+      }
     }
 
     // Status updates (delivered, read, etc.)

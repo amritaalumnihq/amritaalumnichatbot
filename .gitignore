@@ -4,7 +4,6 @@ server/.env
 .env
 
 # Database files with real alumni data
-server/alumni_db.json
 server/conversations.json
 
 # Node modules
