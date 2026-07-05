@@ -126,7 +126,7 @@ async function sendTemplateToPhone(phone) {
     to: normalizePhone(phone),
     type: 'template',
     template: {
-      name: 'alumni_msg',
+      name: 'alumni_directory_update',
       language: { code: 'en' },
       components: [
         {
