@@ -23,10 +23,12 @@ const CONV_PATH = path.join(__dirname, 'conversations.json');
 if (!fs.existsSync(DB_PATH))   fs.writeFileSync(DB_PATH,   '[]',  'utf8');
 if (!fs.existsSync(CONV_PATH)) fs.writeFileSync(CONV_PATH, '{}',  'utf8');
 
-// Private key: read from env var (production) or file (local dev)
-const PRIVATE_KEY = process.env.PRIVATE_KEY
-  ? process.env.PRIVATE_KEY.replace(/\\n/g, '\n')
-  : fs.readFileSync(path.join(__dirname, 'private.pem'), 'utf8');
+// Private key: base64 env var (Railway) → escaped-newline env var → local file
+const PRIVATE_KEY = process.env.PRIVATE_KEY_B64
+  ? Buffer.from(process.env.PRIVATE_KEY_B64, 'base64').toString('utf8')
+  : process.env.PRIVATE_KEY
+    ? process.env.PRIVATE_KEY.replace(/\\n/g, '\n')
+    : fs.readFileSync(path.join(__dirname, 'private.pem'), 'utf8');
 
 const VERIFY_TOKEN    = process.env.VERIFY_TOKEN    || 'amrita_verify_2024';
 const WA_TOKEN        = process.env.WA_TOKEN        || '';
