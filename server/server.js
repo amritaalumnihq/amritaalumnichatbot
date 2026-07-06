@@ -4,6 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb');
 
+const BANNER_B64 = (() => {
+  try {
+    const img = fs.readFileSync(path.join(__dirname, 'public', 'amrita_banner_small.jpg'));
+    return 'data:image/jpeg;base64,' + img.toString('base64');
+  } catch { return ''; }
+})();
+
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -253,7 +260,7 @@ app.post('/webhook', async (req, res) => {
             employer: alumni?.employer || '', designation: alumni?.designation || '',
             location: alumni?.location || '', email: alumni?.email || '',
             linkedin: alumni?.linkedin || '', lookup_phone: phone,
-            image_src: 'https://amritaalumnichatbot-production.up.railway.app/amrita_banner_small.jpg'
+            image_src: BANNER_B64
           }
         };
       } else if (screen === 'UPDATE') {
