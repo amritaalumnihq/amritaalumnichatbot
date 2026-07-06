@@ -84,6 +84,17 @@ async function deleteAlumni(phone) {
   await db.collection('alumni').deleteOne(phoneFilter(p));
 }
 
+async function markFlowSent(phone) {
+  const db = await getDb();
+  const p = normalizePhone(phone);
+  const existing = await db.collection('alumni').findOne(phoneFilter(p));
+  if (existing) {
+    await db.collection('alumni').updateOne({ _id: existing._id }, { $set: { flowSent: new Date().toISOString() } });
+  } else {
+    await db.collection('alumni').insertOne({ phone: p, status: 'Pending', flowSent: new Date().toISOString(), lastUpdated: '' });
+  }
+}
+
 async function importAlumniRows(rows) {
   const db = await getDb();
   let added = 0, updated = 0;
@@ -343,7 +354,7 @@ app.post('/api/send-flow', async (req, res) => {
   try {
     const result = await sendTemplateToPhone(phone);
     if (result.messages) {
-      await upsertAlumni(phone, { flowSent: new Date().toISOString() });
+      await markFlowSent(phone);
     }
     res.json(result);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -357,6 +368,7 @@ app.post('/api/send-flow-all', async (req, res) => {
     for (const a of pending) {
       try {
         const r = await sendTemplateToPhone(a.phone);
+        if (r.messages) await markFlowSent(a.phone);
         results.push({ phone: a.phone, success: !!r.messages, result: r });
         await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
