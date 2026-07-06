@@ -4,12 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const { MongoClient } = require('mongodb');
 
-const BANNER_B64 = (() => {
-  try {
-    const img = fs.readFileSync(path.join(__dirname, 'public', 'amrita_banner_small.jpg'));
-    return 'data:image/jpeg;base64,' + img.toString('base64');
-  } catch { return ''; }
-})();
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -259,8 +253,7 @@ app.post('/webhook', async (req, res) => {
             full_name: alumni?.name || '', grad_year: alumni?.year || '',
             employer: alumni?.employer || '', designation: alumni?.designation || '',
             location: alumni?.location || '', email: alumni?.email || '',
-            linkedin: alumni?.linkedin || '', lookup_phone: phone,
-            image_src: BANNER_B64
+            linkedin: alumni?.linkedin || '', lookup_phone: phone
           }
         };
       } else if (screen === 'UPDATE') {
