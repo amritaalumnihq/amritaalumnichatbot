@@ -252,7 +252,8 @@ app.post('/webhook', async (req, res) => {
             full_name: alumni?.name || '', grad_year: alumni?.year || '',
             employer: alumni?.employer || '', designation: alumni?.designation || '',
             location: alumni?.location || '', email: alumni?.email || '',
-            linkedin: alumni?.linkedin || '', lookup_phone: phone
+            linkedin: alumni?.linkedin || '', lookup_phone: phone,
+            image_src: 'https://amritaalumnichatbot-production.up.railway.app/amrita_banner_small.jpg'
           }
         };
       } else if (screen === 'UPDATE') {
