@@ -417,7 +417,8 @@ app.post('/wa-webhook', (req, res) => {
 
     const statuses = value.statuses || [];
     for (const s of statuses) {
-      console.log(`Status for ${s.recipient_id}: ${s.status}`);
+      const errInfo = s.errors?.[0] ? ` | error ${s.errors[0].code}: ${s.errors[0].title}` : '';
+      console.log(`Status for ${s.recipient_id}: ${s.status}${errInfo}`);
     }
   } catch (e) {
     console.error('wa-webhook error:', e.message);
