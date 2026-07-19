@@ -26,7 +26,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY_B64
 
 const VERIFY_TOKEN    = process.env.VERIFY_TOKEN    || 'amrita_verify_2024';
 const WA_TOKEN        = process.env.WA_TOKEN        || '';
-const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID || '1181292345065359';
+const PHONE_NUMBER_ID = process.env.PHONE_NUMBER_ID || '1230621676795434';
 const FLOW_ID         = process.env.FLOW_ID         || '1571206234422583';
 const FLOW_MODE       = process.env.FLOW_MODE       || 'published';
 const MONGODB_URI     = process.env.MONGODB_URI     || process.env.MONGO_URI || '';
